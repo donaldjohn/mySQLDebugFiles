@@ -1,0 +1,7 @@
+select count(*) from view_wf_instance_data where rowid < 100;
+
+select * from view_wf_instance_data where rownum < 10
+
+
+select * from t_zj_package; 
+

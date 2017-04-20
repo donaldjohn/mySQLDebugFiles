@@ -1,0 +1,6 @@
+select  pubtype,date,coutn(*) from t_pub_list  group by  pubtuy,date
+
+select * from t_pub_list;
+
+
+select * from epex.t_extract_info;

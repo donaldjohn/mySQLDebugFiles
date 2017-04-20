@@ -1,0 +1,50 @@
+select  pubtype,date,coutn(*) from t_pub_list  group by  pubtuy,date
+
+select * from epex.t_pub_list;
+
+select * from t_extract_info;
+
+select * from  epex.T_REQUEST
+
+select * from  epex.T_pub_info_single
+
+select * from  epex.T_sw_info;
+
+TMPPTCB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
