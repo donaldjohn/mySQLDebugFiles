@@ -1,3 +1,221 @@
+select * from S_FOREIGN_PATENT_SEQUENCE;
+
+
+S_BIOLOGICAL_SEQ
+
+
+
+
+
+
+
+select * from S_CHINA_PATENT_TEXTIMAGE where rownum < 100;
+
+
+
+----3 中国专利标准化全文文本数据 ***可用
+declare
+ v_count number;
+ v_data_count number;
+ v_immidiate_sql varchar2(4000);
+begin
+  select count(1) into v_data_count
+  from S_CHINA_PATENT_STANDARDFULLTXT
+  where  56 <> length(doc_file_name) or ori_pub_date is null;
+   dbms_output.put_line('v_data_count = ' || v_data_count);
+  
+  select count(1) into v_count
+  from user_tables ut
+  where ut.TABLE_NAME = 'S_ERROR_DOC_BACKUP_003';
+  
+  
+  if v_data_count > 0
+    then       
+        if v_count = 0
+        then
+          v_immidiate_sql := 'create table S_ERROR_DOC_BACKUP_003 as select * from S_CHINA_PATENT_STANDARDFULLTXT where 56 <> length(doc_file_name) or ori_pub_date is null';
+        else
+          v_immidiate_sql := 'insert into S_ERROR_DOC_BACKUP_003 select * from S_CHINA_PATENT_STANDARDFULLTXT where 56 <> length(doc_file_name) or ori_pub_date is null';
+        end if;
+        execute immediate v_immidiate_sql;
+        dbms_output.put_line('v_immidiate_sql = ' || v_immidiate_sql);
+        delete from S_CHINA_PATENT_STANDARDFULLTXT where 56 <> length(doc_file_name) or ori_pub_date is null;
+        commit;
+    else
+       dbms_output.put_line('Nothing to clear!');
+  end if;
+exception
+  when others then
+    rollback;
+end
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select * from MV_NP_IDX_INFO_STAT_BY_BATCH  where data_res = '中国商标';
+
+
+
+
+
+
+
+
+update S_MADRID_BRAND_PURCHASE doc set doc.batch = 
+case instr(doc.file_path, '\') > 0 
+  then 
+    substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1) 
+  else substr(doc.file_path, instr(doc.file_path, '/', -1, 2) + 1, instr(doc.file_path, '/', -1, 1) - instr(doc.file_path, '/', -1, 2) -1) 
+end;
+
+
+//更新数据批次信息
+update S_MADRID_BRAND_PURCHASE doc set doc.batch = decode(instr(doc.file_path, '\'), 0, substr(doc.file_path, instr(doc.file_path, '/', -1, 2) + 1, instr(doc.file_path, '/', -1, 1) - instr(doc.file_path, '/', -1, 2) -1), substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1));
+
+
+
+
+update S_MADRID_BRAND_PURCHASE doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+
+
+
+select * from MV_IDX_INFO_STAT_BY_PUBDATE where data_res = '';
+
+
+
+create index ix_file_path_214 on s_docdb(file_path);
+
+select '/**'||dtl.id||'**/ create index ix_file_path_'||dtl.id||' on '||dtl.table_name||'(file_path);' from s_data_resource_types_detail dtl
+order by dtl.id
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+select * from s_data_resource_types_detail dtl where dtl.id = 214;
+DOCDB数据（标准化）
+
+
+select * from import_session s where s.completed = 'N' and s.data_res_type='DOCDB数据（标准化）';
+select * from s_docdb dc where dc.
+
+
+select count(1) from s_index_file_detail;
+
+select dtl.id, 
+'PARTITION par_'||dtl.id||' VALUES ('''||dtl.chinese_name||''')'||chr(10)||
+'  ('||chr(10)||chr(10)||
+'  SUBPARTITION spar_'||dtl.id||'_default VALUES (DEFAULT)'||chr(10)||
+'  ),'
+from s_data_resource_types_detail dtl where dtl.id not in (209.1, 209.2)
+order by dtl.id asc;
+
+
+
+------查看非专利标准化索引 详细信息
+select * from s_index_file_detail idl where idl.data_res = '中国标准化简单引文数据';-- 13
+select * from S_CHINA_STANDARD_SIMPCITATION;--13
+
+
+select * from s_index_file_detail idl where idl.data_res = '世界专利法律状态（INPADOC）（标准化）';-- 231
+select doc.prspublicationdate from S_WORLD_PATENT_LAWSTATUS doc;--231
+
+
+----232
+select * from s_index_file_detail idl where idl.data_res = '日本引文(STD_JP_CIT)（标准化）';
+select (doc.ori_app_country || doc.ori_app_number),doc.sta_app_number, doc.sta_app_date, (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind) from S_STD_JP_CIT doc;
+
+--233
+select * from s_index_file_detail idl where idl.data_res = '韩国引文(STD_KR_CIT)（标准化）'; 
+select * from S_STD_KR_CIT;--233
+
+--234
+select * from s_index_file_detail idl where idl.data_res = '韩国法律状态数据(STD_KR_PRS)（标准化）';
+select * from s_index_file_detail idl where idl.data_res = 'abaccd';
+select * from S_STD_KR_PRS;
+
+
+-- 132
+select distinct doclist_topic, idl.doclist_pn from s_np_index_file_detail idl where idl.data_res = '中国商标';
+select * from s_np_index_file_detail idl where idl.data_res = '中国商标';
+select * from s_np_index_file_detail idl where idl.data_res = '中国商标';
+select * from s_np_index_file_detail idl where idl.data_res = '中国商标';
+select * from S_CHINA_BRAND;--132
+select doc.mark_cn_id from S_CHINA_BRAND doc;--132
+select  from S_CHINA_BRAND;--132
+select * from S_CHINA_BRAND;--132
+
+select * from s_np_index_file_detail idl where idl.data_res = '中国商标许可数据';-- 133
+select * from S_CHINA_BRAND_LICENSE;--133
+select * from s_np_index_file_detail idl where idl.data_res = '中国商标转让数据';-- 134
+select * from S_CHINA_BRAND_TRANSFER;--134
+select * from s_np_index_file_detail idl where idl.data_res = '马德里商标进入中国';-- 136
+select * from S_MADRID_BRAND_ENTER_CHINA;--136
+
+select * from s_np_index_file_detail idl where idl.data_res = '中国驰名商标数据';-- 137
+select * from S_CHINA_WELLKNOWN_BRAND;--137
+
+select * from s_np_index_file_detail idl where idl.data_res = '美国申请商标';-- 138
+select serial_number from S_AMERICA_APPLY_BRAND;--138
+
+
+select * from s_np_index_file_detail idl where idl.data_res = '美国转让商标';-- 139
+select * from S_AMERICA_TRANSFER_BRAND;--139
+select * from s_np_index_file_detail idl where idl.data_res = '中外期刊的著录项目与文摘数据';-- 153
+select * from S_JOURNAL_PROJECT_ABSTRACT;--153
+select * from s_np_index_file_detail idl where idl.data_res = '中国法院判例初加工数据';-- 162
+select * from S_CHINA_COURTCASE_PROCESS;--162
+select * from s_np_index_file_detail idl where idl.data_res = '马德里商标购买数据';-- 172
+select * from S_MADRID_BRAND_PURCHASE;--172
+select * from s_np_index_file_detail idl where idl.data_res = '中国专利代理知识产权法律法规加工数据';-- 180
+select * from S_CHINA_PATENT_LAWSPROCESS;--180
+
+
+
+
 select 
 count(1)
 from

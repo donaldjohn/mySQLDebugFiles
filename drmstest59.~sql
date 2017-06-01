@@ -1,12 +1,2037 @@
+      select
+      d.batch, count(1) as matched_count
+      from
+      s_index_file_detail d
+      where d.data_res='日本引文(STD_JP_CIT)（标准化）'
+      and
+      exists
+      (
+        select
+        1
+        from
+        S_STD_JP_CIT s
+        where
+        d.dc_publication_num = (s.sta_pub_country || s.sta_pub_number || s.sta_pub_kind)
+        and d.dc_publication_date = to_char(s.sta_pub_date, 'yyyyMMdd') 
+      )
+      group by d.batch
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      select
+      d.batch,count(1), count(distinct d.doclist_pn) as matched_count
+      from
+      s_np_index_file_detail d
+      where d.data_res='中国商标转让数据'
+      and
+      exists
+      (
+        select
+        1
+        from
+        S_CHINA_BRAND_TRANSFER s
+        where
+        s.batch = d.batch
+        and
+        s.mark_cn_id = d.doclist_pn
+      )
+      group by d.batch
 
 
-select count(*) from s_index_file_info inf where inf.data_res = '中国标准化简单引文数据' and inf.batch is not null;
-select count(*) from s_index_file_detail dtl where dtl.data_res = '中国标准化简单引文数据' and dtl.batch is null;
+      select
+      d.batch, count(1) as matched_count, count(distinct d.dc_an, d.dc_publication_date) as matched_ds_count
+      from
+      s_index_file_detail d
+      where d.data_res='世界专利法律状态（INPADOC）（标准化）'
+      and
+      exists
+      (
+        select
+        1
+        from
+        S_WORLD_PATENT_LAWSTATUS s
+        where
+        d.dc_an = (s.ori_app_country || s.ori_app_number)
+        and d.dc_publication_date = to_char(s.prspublicationdate, 'yyyyMMdd')
+      )
+      group by d.batch
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+create table S_STD_CN_PRS
+(
+  id                    VARCHAR2(100) not null,
+  app_number            VARCHAR2(200),
+  pub_date              DATE,
+  law_state             VARCHAR2(200),
+  law_state_information VARCHAR2(4000),
+  import_session_id     VARCHAR2(100),
+  import_time           DATE,
+  file_path             VARCHAR2(1000),
+  archive_inner_path    VARCHAR2(1000),
+  session_index         NUMBER,
+  doc_file_name         VARCHAR2(500)
+);
+comment on column S_STD_CN_PRS.id
+  is '主键';
+comment on column S_STD_CN_PRS.app_number
+  is '专利申请号';
+comment on column S_STD_CN_PRS.pub_date
+  is '法律状态公告日';
+comment on column S_STD_CN_PRS.law_state
+  is '法律状态';
+comment on column S_STD_CN_PRS.law_state_information
+  is '法律状态信息';
+alter table S_STD_CN_PRS
+  add primary key (ID);  
+
+
+
+
+  select
+  batch, count(1) doc_ds_pat_cnt
+  from
+  (
+  select
+  s.batch,
+  s.mark_cn_id
+  from
+  S_CHINA_BRAND_LICENSE s
+  group by s.batch, s.mark_cn_id
+  having count(1) = 1
+  )
+  group by batch
+
+
+
+
+
+
+
+
+
+
+
+
+
+select length('专利权人的姓名或者名称、地址的变更
+主分类号:10-05
+变更事项:专利权人
+变更前:深圳市一道通科技有限公司
+变更后:深圳一道通科技股份有限公司
+变更事项:地址
+变更前:518000 广东省深圳市龙华新区观澜南大富社区观平路299号粮食集团观澜工业园第八栋厂房
+变更后:518000 广东省深圳市龙华新区观澜南大富社区观平路299号粮食集团观澜工业园第八栋厂房') from dual;
+
+
+
+
+
+select * from s_data_resource_types_detail;
+
+select 
+length('CN302016000002301000000000000000LEPRSZH20160608CN00Y.XML')
+from
+dual;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select * from S_CHINA_PATENT_STAND_TEXTIMAGE where file_path like 'W:\004-生产报错%' order by import_time desc;
+
+
+select distinct import_session_id from S_CHINA_PATENT_STAND_TEXTIMAGE where file_path like 'W:\004-生产报错%';
+
+select * from import_session where session_id in (select distinct import_session_id from S_CHINA_PATENT_STAND_TEXTIMAGE where file_path like 'W:\004-生产报错%');
+
+
+
+
+begin
+delete from import_session where session_id in (select distinct import_session_id from S_CHINA_PATENT_STAND_TEXTIMAGE where file_path like 'W:\004-生产报错%');
+delete from S_CHINA_PATENT_STAND_TEXTIMAGE where file_path like 'W:\004-生产报错%';
+commit;
+Exception
+   when others then
+     rollback;
+end;
+
+
+
+
+
+
+delete from import_session where id in (select distinct import_session_id from S_CHINA_PATENT_STAND_TEXTIMAGE where file_path like 'W:\004-生产报错%');
+
+delete from S_CHINA_PATENT_STAND_TEXTIMAGE where file_path like 'W:\004-生产报错%' order by import_time desc;
+commit;
+
+select 
+
+
+
+begin
+select count(1) from s_china_brand doc where doc.mark_cn_id is null; 
+end
+
+
+
+
+select * from S_INDEX_FILE_INFO info where info.data_res = '中国专利标准化全文文本数据' and info.file_path = '\\10.33.79.4\vol81_0\中国专利标准化数据\std_cn_fulltext_zip\full text for industrial design\19950524\INDEX-CN-19950524-D-001.XML';
+
+
+
+----查询索引错误信息
+select dtl.data_res, dtl.file_path, dtl.pat_cnt, dtl.doclist_count, dtl.fully_imported from s_index_file_info dtl where dtl.data_res = (select rdl.chinese_name from s_data_resource_types_detail rdl where rdl.id = 3) and dtl.fully_imported <> 'Y';
+
+
+
+drop materialized view MV_EXTRA_DOC_INFO_153;
+
+
+create materialized view MV_EXTRA_DOC_INFO_153
+refresh force on demand
+as
+select
+  doc.batch, doc.file_path, doc.archive_inner_path, count(1) as rec_count
+from
+  S_JOURNAL_PROJECT_ABSTRACT doc
+  group by  doc.batch, doc.file_path, doc.archive_inner_path, doc.doc_file_name
+  having not exists
+  (
+    select
+    1
+    from
+    s_np_index_file_detail idx
+    where idx.data_res = '中外期刊的著录项目与文摘数据'
+    and idx.batch = doc.batch
+    and idx.doc_file_name = doc.doc_file_name
+  )
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select
+  doc.batch, doc.file_path, doc.archive_inner_path, count(1) as rec_count
+from
+  S_JOURNAL_PROJECT_ABSTRACT doc
+  group by  doc.batch, doc.file_path, doc.archive_inner_path, doc.doc_file_name
+  having not exists
+  (
+    select
+    1
+    from
+    s_np_index_file_detail idx
+    where idx.data_res = '中外期刊的著录项目与文摘数据'
+    and idx.batch = doc.batch
+    and idx.doc_file_name = doc.doc_file_name
+  )
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+update S_MADRID_BRAND_PURCHASE doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+commit;
+
+select file_path, batch from S_MADRID_BRAND_PURCHASE;
+
+
+
+select * from MV_CHECKS_RESULT_172;
+
+create materialized view MV_CHECKS_RESULT_172
+refresh force on demand
+as
+(
+select
+  stat.batch, --公开日
+  stat.idx_pat_cnt,--索引数量
+  stat.doc_pat_cnt,--文档数量
+  nvl(ds_index.idx_dis_pnt_cnts, 0) idx_dis_pnt_cnts, --索引去重后数量
+  case when ds_index.idx_dis_pnt_cnts <> 0 and stat.idx_pat_cnt <> ds_index.idx_dis_pnt_cnts then 'Y' else 'N' end as index_dup,--索引是否重复
+  nvl(ds_Doc.doc_ds_pat_cnt, 0) doc_ds_pat_cnt,--文档去重后数量
+  case when  ds_Doc.doc_ds_pat_cnt <> 0 and stat.doc_pat_cnt <> ds_Doc.doc_ds_pat_cnt then 'Y' else 'N' end as Doc_dup,--文档是否重复
+  nvl(matched_Rec.matched_count, 0) matched_count,---索引和数据匹配的数量
+  --校验结果: 索引数量不为0 数据去重后数量和文档去重后数量以及两者完全匹配数量相等
+  case when 0 <> ds_index.idx_dis_pnt_cnts and ds_index.idx_dis_pnt_cnts = ds_Doc.doc_ds_pat_cnt and ds_index.idx_dis_pnt_cnts = matched_Rec.matched_count then 'Y' else 'N' end as check_passed
+from
+(
+  select
+  nvl(idx.batch, dt.batch) as batch,---使用索引公布日 或 Doc公布日作为公布日
+  nvl(idx.pat_cnt_Index, 0) as idx_pat_cnt,
+  nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
+  from
+  (
+          --统计单公布日的索引统计信息: 仅统计入库没有错误, 完整入库的索引
+          select
+          s.batch as batch, --批次
+          sum(s.doclist_count) as pat_cnt_Index -- 索引总数
+          from
+          s_np_index_file_info s
+          where
+          s.data_res = '马德里商标购买数据'
+          and
+          s.fully_imported = 'Y' --完整入库
+          group by s.batch
+          ---     改公布日包含的所有索引都自检通过
+          having count(*) = count(case when s.fully_imported = 'Y' and s.self_check_successed = 'Y' then 1 else null end)
+  ) idx
+  full join
+  (
+          select
+          d.batch as batch, --批次
+          count(*)   as pat_cnt_Doc --文档数量
+          from
+          S_MADRID_BRAND_PURCHASE d
+          group by d.batch
+  ) dt
+  on idx.batch = dt.batch --根据公布日 合并 索引统计信息 和 数据统计信息
+) stat
+left join
+(
+  select
+     batch, count(1) idx_dis_pnt_cnts
+  from
+  (
+    select
+    id.batch, id.doclist_pn
+    from
+    s_np_index_file_detail id
+    where
+    id.data_res='马德里商标购买数据'
+    group by id.batch, id.doclist_pn
+    having count(1) = 1
+  )
+  group by batch
+) ds_index -- 按公布日统计单去重后索引数量
+on
+stat.batch = ds_index.batch
+left join
+(
+  select
+  batch, count(1) doc_ds_pat_cnt
+  from
+  (
+  select
+  s.batch,
+  s.intregn
+  from
+  S_MADRID_BRAND_PURCHASE s
+  group by s.batch, s.intregn
+  having count(1) = 1
+  )
+  group by batch
+) ds_Doc -- 按公布日统计去重后索引数量
+on
+stat.batch = ds_Doc.batch
+left join
+(
+      select
+      d.batch, count(1) as matched_count
+      from
+      s_np_index_file_detail d
+      where d.data_res='马德里商标购买数据'
+      and
+      exists
+      (
+        select
+        1
+        from
+        S_MADRID_BRAND_PURCHASE s
+        where
+        s.batch = d.batch
+        and
+        s.intregn = d.doclist_pn
+      )
+      group by d.batch
+) matched_Rec ---- 按公开日攻击匹配数据
+on
+stat.batch = matched_Rec.batch
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+delete from S_DOCDB t where t.file_path = '\\10.33.79.4\vol71_0\std_zip\DOCDB\20160614\KR\20130924\20130924-1-001.ZIP'
+
+
+\\10.33.79.4\vol71_0\std_zip\DOCDB\20160720\US\19840807\19840807-1-001.ZIP
+\\10.33.79.4\vol71_0\std_zip\DOCDB\20160706\FR\19540611\19540611-1-001.ZIP
+\\10.33.79.4\vol71_0\std_zip\DOCDB\20160711\JP\19740930\19740930-1-001.ZIP
+\\10.33.79.4\vol71_0\std_zip\DOCDB\20160614\JP\19860210\19860210-1-001.ZIP
+
+
+
+
+
+
+select  from  s_docdb d group by d.import_session_id;
+
+
+select 
+s.zip_or_dir_path
+from 
+import_session 
+s 
+where 
+s.data_res_type = 'DOCDB数据（标准化）' 
+and 
+s.completed = 'Y'
+group by s.zip_or_dir_path
+having count(1) > 1
+;
+
+
+
+
+
+
+
+
+
+
+----162 中国法院判例初加工数据 多余索引列表
+select * from MV_EXTRA_IDX_INFO_162;
+drop materialized view MV_EXTRA_IDX_INFO_162;
+create materialized view MV_EXTRA_IDX_INFO_162
+refresh force on demand
+as
+select
+idx.id, idx.batch, idx.index_np_file_path, idx.doclist_pn
+from
+s_np_index_file_detail idx
+where idx.data_res = '中国法院判例初加工数据'
+and
+not exists
+(
+select
+1
+from
+S_CHINA_COURTCASE_PROCESS doc
+where idx.batch = doc.batch
+and idx.doclist_pn = doc.pn
+)
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select count(1) from S_JOURNAL_PROJECT_ABSTRACT;
+
+select dtl.doclist_pn from s_np_index_file_detail dtl where dtl.data_res = '中国法院判例初加工数据'  order by dtl.import_time desc;
+select doc.pn from S_CHINA_COURTCASE_PROCESS doc;
+
+
+select * from s_np_index_file_detail dtl where dtl.data_res = '马德里商标购买数据'  order by dtl.import_time desc;
+select doc.intregn, doc.archive_inner_path from S_MADRID_BRAND_PURCHASE doc;
+
+
+select dtl.doclist_pn from s_np_index_file_detail dtl where dtl.data_res = '中国专利代理知识产权法律法规加工数据'  order by dtl.import_time desc;
+select doc.law_no from S_CHINA_PATENT_LAWSPROCESS doc;
+
+
+select * from s_data_resource_types_detail dtl where dtl.id = 162;
+中国法院判例初加工数据 S_CHINA_COURTCASE_PROCESS
+
+select * from s_data_resource_types_detail dtl where dtl.id = 180;
+中国专利代理知识产权法律法规加工数据 S_CHINA_PATENT_LAWSPROCESS
+
+
+select * from s_index_file_detail dtl where dtl.data_res = '中国法院判例初加工数据' and dtl.index_file_path = '\\10.33.79.4\vol81_0\中国专利标准化数据\std_cn_fulltext_zip\full text for industrial design\20100616\INDEX-CN-20100616-S-001.XML'  order by dtl.import_time desc;
+
+and dtl.index_file_path='\\10.33.79.4\vol81_0\中国专利标准化数据\std_cn_fulltext_zip\full text for industrial design\19991222\INDEX-CN-19991222-D-001.XML'
+                        '\\10.33.79.4\vol81_0\中国专利标准化数据\std_cn_fulltext_zip\full text for industrial design\20100616\INDEX-CN-20100616-S-001.XML'
+
+
+
+
+
+select * from s_np_index_file_detail dtl where dtl.data_res like '%中外期刊%';
+select tb.assignment_reel_no, tb.assignment_frame_no, tb.doc_file_name from S_AMERICA_TRANSFER_BRAND tb where tb.assignment_reel_no||'_'||tb.assignment_frame_no||'.xml' <> tb.doc_file_name;
+
+select substr(t.archive_inner_path, instr(t.archive_inner_path, '\', -1, 1) + 1) from S_AMERICA_TRANSFER_BRAND t;
+
+update S_AMERICA_TRANSFER_BRAND t set doc_file_name = substr(t.archive_inner_path, instr(t.archive_inner_path, '\', -1, 1) + 1);
+commit;
+
+select * from S_AMERICA_TRANSFER_BRAND;
+
+update S_AMERICA_TRANSFER_BRAND t set doc_file_name = substr(t.archive_inner_path, instr(t.archive_inner_path, '/', -1, 1) + 1);
+
+select 
+dtl.id,
+'/**'||dtl.id||'  '||dtl.chinese_name||'    '||dtl.table_name||'**/'||chr(10)||
+'select * from MV_EXTRA_IDX_INFO_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' where rownum < 100;'||chr(10)||
+'select * from MV_EXTRA_DOC_INFO_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' where rownum < 100;'||chr(10)||
+'select * from MV_CHECKS_RESULT_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' where rownum < 100;'||chr(10)||
+chr(10)||chr(10)
+from s_data_resource_types_detail dtl where dtl.haschecker = 'Y' order by dtl.id;
+
+
+
+
+
+select * from import_session s where s.session_id
+
+delete from import_session s where s.zip_or_dir_path = '';
+
+create index idx_idt_file_path on s_index_file_detail(;
+
+select * from import_session s 
+
+create index idx_im_ss on import_session(zip_or_dir_path);
+
+select * from mv_extra_doc_info_003 ed left join 
+
+create index ix_file_path_214 on s_docdb(file_path);
+
+select * from s_np_index_file_detail
+
+/**214分析**/
+select * from import_session s where s.tablename = upper('s_docdb') and s.completed = 'Y' and not exists (select 1 from s_docdb db where db.import_session_id = s.session_id);
+select * from s_docdb;
+
+select count(1) from s_docdb db where db.import_session_id = 'cf33925e-c9a6-4986-bddc-eaf6bd689d9c';
+select count(1) from s_docdb db where db.import_session_id = 'dbfe3bc9-87a4-4056-a085-12752e9a5451';
+select count(1) from s_docdb db where db.import_session_id = '959e26dd-7558-4def-9dca-b777b0dbf3ec';
+
+
+
+select * from s_china_brand sb where sb.
+
+select 'select * from '||dtl.table_name||' t where t.pub_number like ''%201110433502%'';----' || dtl.chinese_name from s_data_resource_types_detail dtl where dtl.chinese_name like '%中国%';
+
+
+select * from S_CHINA_PATENT_TEXTCODE t where t.pub_number like '%201110433502%';
+
+
+select count(1) from s_index_file_detail ori where ori.data_res='韩国法律状态数据(STD_KR_PRS)（标准化）';
+select count(1) from s_index_file_detail;
+/**查询表大小**/
+select UPPER('s_index_file_detail'), sum(seg.BYTES) /1024/1024/1024 || 'GB' from user_segments seg where seg.segment_name=UPPER('s_index_file_detail') and seg.segment_type= 'TABLE SUBPARTITION';
+
+select count(*) from s_index_file_detail;
+
+
+
+select UPPER('s_index_file_detail'), seg.segment_type, seg.BYTES /1024/1024/1024 || 'GB' from user_segments seg where seg.segment_name=UPPER('s_index_file_detail') and;
+
+
+select UPPER('s_index_file_detail'), sum(seg.BYTES) /1024/1024/1024 || 'GB' from user_segments seg where seg.segment_name=UPPER('s_index_file_detail_origin');
+
+select * from user_segments;
+
+select seg.segment_name, seg.BYTES /1024/1024/1024 || 'GB' from user_segments seg where seg.BYTES >= 2*1024*1024*2014 order by seg.BYTES desc;
+
+select * from NPINDEXDETILFILEPATH;
+
+
+
+select * from dba_data_files;
+
+
+/**查看存储空间使用情况**/
+select 
+b.file_id 文件ID号, 
+b.tablespace_name 表空间名, 
+b.bytes/1024/1024||'M'字节数, 
+(b.bytes-sum(nvl(a.bytes,0)))/1024/1024||'M' 已使用, 
+sum(nvl(a.bytes,0))/1024/1024||'M' 剩余空间, 
+100 - sum(nvl(a.bytes,0))/(b.bytes)*100 占用百分比 
+from dba_free_space a,dba_data_files b 
+where a.file_id=b.file_id 
+group by b.tablespace_name,b.file_id,b.bytes 
+order by b.file_id;
+
+
+select * from s_index_file_detail;
+
+insert into s_index_file_detail select * from s_index_file_detail_origin ori where ori.data_res='';commit; 
+commit;
+
+
+select count(1) from s_index_file_detail_origin ori where ori.batch is null;
+
+
+
+
+
+select 
+ori.data_res,
+'insert into s_index_file_detail select * from s_index_file_detail_origin ori where ori.data_res='''||ori.data_res||''' and ori.batch = '''||ori.batch||''';commit;',  
+count(1) 
+from s_index_file_detail_origin ori
+where
+ori.data_res = '世界专利法律状态（INPADOC）（标准化）'
+group by ori.data_res, ori.batch order by count(1) ;
+
+
+
+
+
+
+
+
+'insert into s_index_file_detail select * from s_index_file_detail_origin  where data_res = '';
+commit;'
+
+
+select distinct o.data_res from s_index_file_detail_origin o
+
+
+
+select count(1) from s_index_file_detail_origin;
+delete from s_index_file_detail;
+commit;
+
+
+
+select count(1) from s_index_file_detail;
+drop table s_index_file_detail;
+select count(1) from s_index_file_detail_origin;
+
+
+/**
+PARTITION p_southwest VALUES ('AZ', 'UT', 'NM')
+  ( 
+  SUBPARTITION p_sw_bad VALUES ('B'), 
+  SUBPARTITION p_sw_average VALUES ('A'), 
+  SUBPARTITION p_sw_good VALUES ('G')
+  SUBPARTITION q1_others VALUES (DEFAULT) TABLESPACE tbs_4
+  )
+**/
+
+/**
+PARTITION par_id VALUES ('AZ', 'UT', 'NM')
+  (
+  
+  SUBPARTITION spar_id_default VALUES (DEFAULT)
+  )
+**/
+
+'PARTITION par_id VALUES ('''')'||chr(10)||
+'  ('||chr(10)||chr(10)||
+'  SUBPARTITION spar_id_default VALUES (DEFAULT)'||chr(10)||
+'  )'
+
+
+----第一级分区
+----专利
+select dtl.id, 
+'PARTITION par_'||dtl.id||' VALUES ('''||dtl.chinese_name||''')'||chr(10)||
+'  ('||chr(10)||chr(10)||
+
+'      SUBPARTITION spar_'||dtl.id||'_default VALUES (DEFAULT)'||chr(10)||
+'  ),'
+from s_data_resource_types_detail dtl where dtl.id in (3,4,6,10,13,14,50,51,52,53,54,55,103,104,105,106,107,108,213,214,215,216,217,218,219,220,221,222,223,224,229,231,232,233,234)
+order by dtl.id asc
+
+
+
+
+
+
+
+----非专利
+select dtl.id, 
+'PARTITION par_'||dtl.id||' VALUES ('''||dtl.chinese_name||''')'||chr(10)||
+'  ('||chr(10)||chr(10)||
+
+'      SUBPARTITION spar_'||dtl.id||'_default VALUES (DEFAULT)'||chr(10)||
+'  ),'
+from s_data_resource_types_detail dtl where dtl.id in (132,133,134,136,137,138,139,153,162,172,180)
+order by dtl.id asc
+
+
+select * from s_np_index_file_detail
+----第二级分区查询语句
+select '      SUBPARTITION spar_dtl.id_'||idxdtl.batch||' VALUES ('''||idxdtl.batch||''')'  from s_index_file_detail ixdtl where ixdtl.data_res = '中国专利' group by ixdtl.batch;
+
+----生成子查询列表
+select
+'select '||dtl.id||' as id, '''||dtl.chinese_name||''' as res, ''      SUBPARTITION spar_'||dtl.id||'_''||idxdtl.batch||'' VALUES (''''''||idxdtl.batch||'''''')''  from s_index_file_detail ixdtl where ixdtl.data_res = '''||dtl.chinese_name||''' group by ixdtl.batch union'
+from s_data_resource_types_detail dtl where dtl.id not in (209.1, 209.2)
+order by dtl.id asc
+
+
+---过滤专利
+select
+'select '||dtl.id||' as id, '''||dtl.chinese_name||''' as res, ''      SUBPARTITION spar_'||dtl.id||'_''||ixdtl.batch||'' VALUES (''''''||ixdtl.batch||'''''')'' expr  from s_index_file_detail ixdtl where ixdtl.data_res = '''||dtl.chinese_name||''' group by ixdtl.batch union'
+from s_data_resource_types_detail dtl where dtl.id in (3,4,6,10,13,14,50,51,52,53,54,55,103,104,105,106,107,108,213,214,215,216,217,218,219,220,221,222,223,224,229,231,232,233,234)
+order by dtl.id asc
+---过滤非专利
+select
+'select '||dtl.id||' as id, '''||dtl.chinese_name||''' as res, ''      SUBPARTITION spar_'||dtl.id||'_''||ixdtl.batch||'' VALUES (''''''||ixdtl.batch||'''''')'' expr  from s_np_index_file_detail ixdtl where ixdtl.data_res = '''||dtl.chinese_name||''' group by ixdtl.batch union'
+from s_data_resource_types_detail dtl where dtl.id in (132,133,134,136,137,138,139,153,162,172,180)
+order by dtl.id asc
+
+
+
+
+
+
+update s_index_file_detail set batch = pub_date where batch is null and pub_date is not null;
+commit;
+
+
+select dtl.id, 'PARTITION par_'||dtl.id||' VALUES ('''|| dtl.chinese_name ||''') , ' 
+from s_data_resource_types_detail dtl where dtl.id not in (209.1, 209.2)
+order by dtl.id asc
+
+
+
+select data_res, count(1) from s_index_file_detail dtl group by dtl.data_res;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----234 韩国法律状态数据(STD_KR_PRS)（标准化） 多余数据列表
+drop materialized view MV_EXTRA_DOC_INFO_234;
+create index idx_sta_pn on (S_STD_KR_PRS.ori_app_country || S_STD_KR_PRS.ori_app_number || S_STD_KR_PRS.sta_pub_kind);
+
+
+create materialized view MV_EXTRA_DOC_INFO_234
+refresh force on demand
+as
+select 
+hdoc.id,
+hdoc.dc_publication_date,
+hdoc.dc_an, 
+hdoc.file_path, 
+hdoc.archive_inner_path
+from
+(
+  select
+  doc.batch,
+  doc.id,
+  (doc.ori_app_country || doc.ori_app_number) dc_an, 
+  doc.file_path,
+  to_char(doc.prspublicationdate, 'yyyyMMdd') dc_publication_date,
+  doc.archive_inner_path
+from
+S_STD_KR_PRS doc
+) hdoc
+full join
+(
+  select
+  idx.*
+  from
+  s_index_file_detail idx
+  where idx.data_res = '韩国法律状态数据(STD_KR_PRS)（标准化）'
+) oidx
+on
+hdoc.batch = oidx.batch
+and hdoc.dc_an = oidx.dc_an
+and hdoc.dc_publication_date = oidx.dc_publication_date
+where oidx.id is null
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+create materialized view MV_EXTRA_DOC_INFO_231
+refresh force on demand
+as
+select 
+hdoc.id,
+hdoc.dc_publication_date,
+hdoc.dc_an, 
+hdoc.file_path, 
+hdoc.archive_inner_path
+from
+(
+  select
+  doc.batch,
+  doc.id,
+  (doc.ori_app_country || doc.ori_app_number) dc_an, 
+  doc.file_path,
+  to_char(doc.prspublicationdate, 'yyyyMMdd') dc_publication_date,
+  doc.archive_inner_path
+from
+S_WORLD_PATENT_LAWSTATUS doc
+) hdoc
+left join
+(
+  select
+  idx.*
+  from
+  s_index_file_detail idx
+  where idx.data_res = '世界专利法律状态（INPADOC）（标准化）'
+) oidx
+on
+hdoc.batch = oidx.batch
+and hdoc.dc_an = oidx.dc_an
+and hdoc.dc_publication_date = oidx.dc_publication_date
+where oidx.id is null
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select count(*) from s_index_file_detail d where d.data_res = '';
+
+
+create index idx_idt_batch on s_index_file_detail(batch);
+create index idx_idt_pd on s_index_file_detail(dc_publication_date);
+create index idx_an on s_index_file_detail(dc_an);
+
+create index idx_idt_ap_num on s_index_file_detail(dc_application_num);
+create index idx_idt_ap_d on s_index_file_detail(dc_application_date);
+create index idx_idt_pn on s_index_file_detail(dc_publication_num);
+
+
+dc_application_num 
+dc_application_date
+dc_publication_num 
+dc_publication_date
+dc_an              
+dc_country  
+
+
+       
+
+select * from MV_CHECKS_RESULT_231;
+
+
+
+
+----234 韩国法律状态数据(STD_KR_PRS)（标准化） 校验结果
+drop materialized view MV_CHECKS_RESULT_234;
+
+create materialized view MV_CHECKS_RESULT_234
+refresh force on demand
+as
+(
+select
+  stat.batch, --公开日
+  stat.idx_pat_cnt,--索引数量
+  stat.doc_pat_cnt,--文档数量
+  nvl(ds_index.idx_dis_pnt_cnts, 0) idx_dis_pnt_cnts, --索引去重后数量
+  case when ds_index.idx_dis_pnt_cnts <> 0 and stat.idx_pat_cnt <> ds_index.idx_dis_pnt_cnts then 'Y' else 'N' end as index_dup,--索引是否重复
+  nvl(ds_Doc.doc_ds_pat_cnt, 0) doc_ds_pat_cnt,--文档去重后数量
+  case when  ds_Doc.doc_ds_pat_cnt <> 0 and stat.doc_pat_cnt <> ds_Doc.doc_ds_pat_cnt then 'Y' else 'N' end as Doc_dup,--文档是否重复
+  nvl(matched_Rec.matched_count, 0) matched_count,---索引和数据匹配的数量
+  --校验结果: 索引数量不为0 数据去重后数量和文档去重后数量以及两者完全匹配数量相等
+  case when 0 <> ds_index.idx_dis_pnt_cnts and ds_index.idx_dis_pnt_cnts = ds_Doc.doc_ds_pat_cnt and ds_index.idx_dis_pnt_cnts = matched_Rec.matched_count then 'Y' else 'N' end as check_passed
+from
+(
+  select
+  nvl(idx.batch, dt.batch) as batch,---使用索引公布日 或 Doc公布日作为公布日
+  nvl(idx.pat_cnt_Index, 0) as idx_pat_cnt,
+  nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
+  from
+  (
+          --统计单公布日的索引统计信息: 仅统计入库没有错误, 完整入库的索引
+          select
+          s.batch as batch, --批次
+          sum(s.doclist_count) as pat_cnt_Index -- 索引总数
+          from
+          s_index_file_info s
+          where
+          s.data_res = '韩国法律状态数据(STD_KR_PRS)（标准化）'
+          and
+          s.fully_imported = 'Y' --完整入库
+          group by s.batch
+          ---     改公布日包含的所有索引都自检通过
+          having count(*) = count(case when s.fully_imported = 'Y' and s.self_check_successed = 'Y' then 1 else null end)   
+  ) idx
+  full join
+  (
+          select
+          d.batch as batch, --批次
+          count(*)   as pat_cnt_Doc --文档数量
+          from
+          S_STD_KR_PRS d
+          group by d.batch
+  ) dt
+  on idx.batch = dt.batch --根据公布日 合并 索引统计信息 和 数据统计信息
+) stat
+left join
+(
+  select
+     batch, count(1) idx_dis_pnt_cnts
+  from
+  (
+    select
+    id.batch, 1
+    from
+    s_index_file_detail id
+    where
+    id.data_res='韩国法律状态数据(STD_KR_PRS)（标准化）'
+    group by id.batch, id.dc_an, id.dc_publication_date
+    having count(1) = 1
+  )
+  group by batch
+) ds_index -- 按公布日统计单去重后索引数量
+on
+stat.batch = ds_index.batch
+left join
+(
+  select
+  batch, count(1) doc_ds_pat_cnt
+  from
+  (
+  select
+  s.batch,
+  1
+  from
+  S_STD_KR_PRS s
+  group by
+  s.batch,
+  s.ori_app_country || s.ori_app_number,
+  s.prspublicationdate
+  having count(1) = 1
+  )
+  group by batch
+) ds_Doc -- 按公布日统计去重后索引数量
+on
+stat.batch = ds_Doc.batch
+left join
+(
+      select
+      d.batch, count(1) as matched_count
+      from
+      s_index_file_detail d
+      where d.data_res='韩国法律状态数据(STD_KR_PRS)（标准化）'
+      and
+      exists
+      (
+        select
+        1
+        from
+        S_STD_KR_PRS s
+        where
+        d.dc_an = (s.ori_app_country || s.ori_app_number)
+        and d.dc_publication_date = to_char(s.prspublicationdate, 'yyyyMMdd')
+      )
+      group by d.batch
+) matched_Rec ---- 按公开日攻击匹配数据
+on
+stat.batch = matched_Rec.batch
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      select
+      d.batch, count(1) as matched_count
+      from
+      s_index_file_detail d
+      where d.data_res='世界专利法律状态（INPADOC）（标准化）'
+      and
+      exists
+      (
+        select
+        1
+        from
+        S_WORLD_PATENT_LAWSTATUS s
+        where
+        d.dc_an = (s.ori_app_country || s.ori_app_number || s.sta_pub_kind)
+        and d.dc_publication_date = to_char(s.sta_pub_date, 'yyyyMMdd')
+      )
+      group by d.batch
+
+
+
+create bitmap index i_idx_dtl_dr on s_index_file_detail(data_res);
+
+    select
+    id.batch, 1
+    from
+    s_index_file_detail id
+    where
+    id.data_res='世界专利法律状态（INPADOC）（标准化）'
+    group by id.batch, id.dc_an, id.dc_publication_date
+    having count(1) = 1
+
+
+
+  select
+  count(1) countA
+  from
+  (
+  select
+  s.batch,
+  1
+  from
+  S_WORLD_PATENT_LAWSTATUS s
+  group by
+  s.batch
+  )
+
+
+    select
+    count(1)
+    from
+    s_index_file_detail id
+    where
+    id.data_res='世界专利法律状态（INPADOC）（标准化）';
+
+  select
+  count(1)
+  from
+  S_WORLD_PATENT_LAWSTATUS s
+
+
+
+
+
+
+
+
+create materialized view MV_EXTRA_DOC_INFO_231
+refresh force on demand
+as
+select 
+hdoc.id,
+hdoc.dc_publication_date,
+hdoc.dc_an, 
+hdoc.file_path, 
+hdoc.archive_inner_path
+from
+(
+  select
+  doc.batch,
+  doc.id,
+  (doc.ori_app_country || doc.ori_app_number) dc_an, 
+  doc.file_path,
+  to_char(doc.prspublicationdate, 'yyyyMMdd') dc_publication_date,
+  doc.archive_inner_path
+from
+S_WORLD_PATENT_LAWSTATUS doc
+) hdoc
+full join
+(
+  select
+  idx.*
+  from
+  s_index_file_detail idx
+  where idx.data_res = '世界专利法律状态（INPADOC）（标准化）'
+) oidx
+on
+hdoc.batch = oidx.batch
+and hdoc.dc_an = oidx.dc_an
+and hdoc.dc_publication_date = oidx.dc_publication_date
+where hdoc.id is not null and oidx.id is not null
+
+
+
+where not exists
+(
+  select
+  1
+  from
+  s_index_file_detail idx
+  where idx.data_res = '世界专利法律状态（INPADOC）（标准化）'
+  and hdoc.batch = idx.batch
+  and hdoc.dc_an = idx.dc_an
+  and hdoc.dc_publication_date = idx.dc_publication_date
+)
+;
+
+
+
+
+
+----233 韩国引文(STD_KR_CIT)（标准化） 多余数据列表
+drop materialized view MV_EXTRA_DOC_INFO_233;
+create index idx_sta_pn on (S_STD_KR_CIT.sta_pub_country || S_STD_KR_CIT.sta_pub_number || S_STD_KR_CIT.sta_pub_kind);
+create materialized view MV_EXTRA_DOC_INFO_233
+refresh force on demand
+as
+select 
+hdoc.id,
+hdoc.dc_publication_date,
+hdoc.dc_publication_num, 
+hdoc.file_path, 
+hdoc.archive_inner_path
+from
+(
+  select
+  doc.batch,
+  doc.id,
+  (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind) dc_publication_num, 
+  doc.file_path,
+  to_char(doc.sta_pub_date, 'yyyyMMdd') dc_publication_date,
+  doc.archive_inner_path
+from
+S_STD_KR_CIT doc
+) hdoc
+where not exists
+(
+  select
+  1
+  from
+  s_index_file_detail idx
+  where idx.data_res = '韩国引文(STD_KR_CIT)（标准化）'
+  and hdoc.batch = idx.batch
+  and hdoc.dc_publication_num = idx.dc_publication_num
+  and hdoc.dc_publication_date = idx.dc_publication_date
+)
+;
+
+
+
+
+
+
+
+
+
+      
+      
+      select
+      b.batch,
+      b.dc_publication_date,
+      b.dc_publication_num,
+      b.countA,
+      a.index_file_path,
+      a.*
+      from
+      (select
+      d.* 
+      from
+      s_index_file_detail d
+      where d.data_res='韩国引文(STD_KR_CIT)（标准化）') a
+      join
+      (
+      select
+      d.batch, d.dc_publication_date, d.dc_publication_num, count(1) countA 
+      from
+      s_index_file_detail d
+      where d.data_res='韩国引文(STD_KR_CIT)（标准化）'
+      group by d.batch, d.dc_publication_date, d.dc_publication_num
+      having count(1) > 1) b
+      on
+      a.batch = b.batch
+      and
+      a.dc_publication_date = b.dc_publication_date
+      and
+      a.dc_publication_num = b.dc_publication_num
+      where rownum < 200
+      order by 
+      b.batch, b.dc_publication_date, b.dc_publication_num
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select
+doc.id,
+(doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind) dc_publication_num, 
+doc.file_path,
+to_char(doc.sta_pub_date, 'yyyyMMdd') dc_publication_date,
+doc.archive_inner_path
+from
+S_STD_KR_CIT doc
+where exists
+(
+select
+1
+from
+s_index_file_detail idx
+where idx.data_res = '韩国引文(STD_KR_CIT)（标准化）'
+and idx.batch = doc.batch
+and idx.dc_publication_num = (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind)
+and idx.dc_publication_date = to_char(doc.sta_pub_date, 'yyyyMMdd')
+)
+
+
+
+
+
+select
+doc.id,
+(doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind) dc_publication_num, 
+doc.file_path,
+to_char(doc.sta_pub_date, 'yyyyMMdd') dc_publication_date,
+doc.archive_inner_path
+from
+S_STD_KR_CIT doc
+full join 
+s_index_file_detail idx
+on
+idx.batch = doc.batch
+and idx.dc_publication_num = (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind)
+and idx.dc_publication_date = to_char(doc.sta_pub_date, 'yyyyMMdd')
+where
+idx.id is null;
+
+
+
+
+
+select
+doc.id,
+(doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind) dc_publication_num, 
+doc.file_path,
+to_char(doc.sta_pub_date, 'yyyyMMdd') dc_publication_date,
+doc.archive_inner_path
+from
+S_STD_KR_CIT doc
+
+
+
+
+
+
+
+
+where exists
+(
+select
+1
+from
+s_index_file_detail idx
+where idx.data_res = '韩国引文(STD_KR_CIT)（标准化）'
+and idx.batch = doc.batch
+and idx.dc_publication_num = (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind)
+and idx.dc_publication_date = to_char(doc.sta_pub_date, 'yyyyMMdd')
+)
+
+
+
+
+
+
+
+
+
+create index idx_sta_pn on S_STD_KR_CIT(sta_pub_country || sta_pub_number || sta_pub_kind);
+
+
+
+create materialized view MV_EXTRA_DOC_INFO_233
+refresh force on demand
+as
+select
+doc.id,
+(doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind) dc_publication_num, doc.file_path,
+to_char(doc.sta_pub_date, 'yyyyMMdd') dc_publication_date,
+doc.archive_inner_path
+from
+S_STD_KR_CIT doc
+where not exists
+(
+select
+1
+from
+s_index_file_detail idx
+where idx.data_res = '韩国引文(STD_KR_CIT)（标准化）'
+and idx.batch = doc.batch
+and idx.dc_publication_num = (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind)
+and idx.dc_publication_date = to_char(doc.sta_pub_date, 'yyyyMMdd')
+)
+;
+
+
+
+select count(1) from S_STD_KR_CIT;
+
+select count(1) from s_index_file_detail idx
+where idx.data_res = '韩国引文(STD_KR_CIT)（标准化）' ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+----232 日本引文(STD_JP_CIT)（标准化） 多余索引列表
+drop materialized view MV_EXTRA_IDX_INFO_232;
+create materialized view MV_EXTRA_IDX_INFO_232
+refresh force on demand
+as
+select
+idx.id, idx.batch, idx.index_file_path, idx.dc_application_num, idx.dc_publication_num , idx.dc_publication_date
+from
+s_index_file_detail idx
+where idx.data_res = '日本引文(STD_JP_CIT)（标准化）'
+and
+not exists
+(
+select
+1
+from
+S_STD_JP_CIT doc
+where idx.batch = doc.batch
+and idx.dc_application_num = (doc.ori_app_country || doc.ori_app_number)
+and idx.dc_publication_num = (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind)
+and idx.dc_publication_date = to_char(doc.sta_pub_date, 'yyyyMMdd') 
+)
+
+
+
+
+----232 日本引文(STD_JP_CIT)（标准化） 多余数据列表
+drop materialized view MV_EXTRA_DOC_INFO_232;
+create materialized view MV_EXTRA_DOC_INFO_232
+refresh force on demand
+as
+select
+doc.id, 
+(doc.ori_app_country || doc.ori_app_number) dc_application_num, 
+(doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind) dc_publication_num, doc.file_path, 
+to_char(doc.sta_pub_date, 'yyyyMMdd') dc_publication_date,
+doc.archive_inner_path
+from
+S_STD_JP_CIT doc
+where not exists
+(
+select
+1
+from
+s_index_file_detail idx
+where idx.data_res = '日本引文(STD_JP_CIT)（标准化）'
+and idx.batch = doc.batch
+and idx.dc_application_num = (doc.ori_app_country || doc.ori_app_number)
+and idx.dc_publication_num = (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind)
+and idx.dc_publication_date = to_char(doc.sta_pub_date, 'yyyyMMdd') 
+)
+;
+
+
+----232 日本引文(STD_JP_CIT)（标准化） 校验结果
+drop materialized view MV_CHECKS_RESULT_232;
+select * from MV_CHECKS_RESULT_232;
+create materialized view MV_CHECKS_RESULT_232
+refresh force on demand
+as
+(
+select
+  stat.batch, --公开日
+  stat.idx_pat_cnt,--索引数量
+  stat.doc_pat_cnt,--文档数量
+  nvl(ds_index.idx_dis_pnt_cnts, 0) idx_dis_pnt_cnts, --索引去重后数量
+  case when ds_index.idx_dis_pnt_cnts <> 0 and stat.idx_pat_cnt <> ds_index.idx_dis_pnt_cnts then 'Y' else 'N' end as index_dup,--索引是否重复
+  nvl(ds_Doc.doc_ds_pat_cnt, 0) doc_ds_pat_cnt,--文档去重后数量
+  case when  ds_Doc.doc_ds_pat_cnt <> 0 and stat.doc_pat_cnt <> ds_Doc.doc_ds_pat_cnt then 'Y' else 'N' end as Doc_dup,--文档是否重复
+  nvl(matched_Rec.matched_count, 0) matched_count,---索引和数据匹配的数量
+  --校验结果: 索引数量不为0 数据去重后数量和文档去重后数量以及两者完全匹配数量相等
+  case when 0 <> ds_index.idx_dis_pnt_cnts and ds_index.idx_dis_pnt_cnts = ds_Doc.doc_ds_pat_cnt and ds_index.idx_dis_pnt_cnts = matched_Rec.matched_count then 'Y' else 'N' end as check_passed
+from
+(
+  select
+  nvl(idx.batch, dt.batch) as batch,---使用索引公布日 或 Doc公布日作为公布日
+  nvl(idx.pat_cnt_Index, 0) as idx_pat_cnt,
+  nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
+  from
+  (
+          --统计单公布日的索引统计信息: 仅统计入库没有错误, 完整入库的索引
+          select
+          s.batch as batch, --批次
+          sum(s.doclist_count) as pat_cnt_Index -- 索引总数
+          from
+          s_index_file_info s
+          where
+          s.data_res = '日本引文(STD_JP_CIT)（标准化）'
+          and
+          s.fully_imported = 'Y' --完整入库
+          group by s.batch
+          ---     改公布日包含的所有索引都自检通过
+          having count(*) = count(case when s.fully_imported = 'Y' and s.self_check_successed = 'Y' then 1 else null end)
+  ) idx
+  full join
+  (
+          select
+          d.batch as batch, --批次
+          count(*)   as pat_cnt_Doc --文档数量
+          from
+          S_STD_JP_CIT d
+          group by d.batch
+  ) dt
+  on idx.batch = dt.batch --根据公布日 合并 索引统计信息 和 数据统计信息
+) stat
+left join
+(
+  select
+     batch, count(1) idx_dis_pnt_cnts
+  from
+  (
+    select
+    id.batch, id.dc_application_num
+    from
+    s_index_file_detail id
+    where
+    id.data_res='日本引文(STD_JP_CIT)（标准化）'
+    group by id.batch, id.dc_application_num, id.dc_publication_num, id.dc_publication_date
+    having count(1) = 1
+  )
+  group by batch
+) ds_index -- 按公布日统计单去重后索引数量
+on
+stat.batch = ds_index.batch
+left join
+(
+  select
+  batch, count(1) doc_ds_pat_cnt
+  from
+  (
+  select
+  s.batch,
+  1
+  from
+  S_STD_JP_CIT s
+  group by 
+  s.batch,
+  s.ori_app_country || s.ori_app_number, 
+  s.sta_pub_country || s.sta_pub_number || s.sta_pub_kind, 
+  s.sta_pub_date
+  having count(1) = 1
+  )
+  group by batch
+) ds_Doc -- 按公布日统计去重后索引数量
+on
+stat.batch = ds_Doc.batch
+left join
+(
+      select
+      d.batch, count(1) as matched_count
+      from
+      s_index_file_detail d
+      where d.data_res='日本引文(STD_JP_CIT)（标准化）'
+      and
+      exists
+      (
+        select
+        1
+        from
+        S_STD_JP_CIT s
+        where
+        d.dc_application_num = (s.ori_app_country || s.ori_app_number)
+        and d.dc_publication_num = (s.sta_pub_country || s.sta_pub_number || s.sta_pub_kind)
+        and d.dc_publication_date = to_char(s.sta_pub_date, 'yyyyMMdd') 
+      )
+      group by d.batch
+) matched_Rec ---- 按公开日攻击匹配数据
+on
+stat.batch = matched_Rec.batch
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select
+idx.id, idx.batch, idx.index_file_path, idx.dc_application_num,idx.dc_application_date, idx.dc_publication_num , idx.dc_publication_date
+from
+s_index_file_detail idx
+where idx.data_res = '韩国引文(STD_KR_CIT)（标准化）'
+and
+not exists
+(
+select
+1
+from
+S_STD_KR_CIT doc
+where idx.batch = doc.batch
+and idx.dc_application_num = (doc.ori_app_country || doc.ori_app_number)
+and idx.dc_publication_num = (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind)
+and idx.dc_publication_date= to_char(doc.sta_pub_date, 'yyyyMMdd')
+);
+
+
+
+
+select
+1
+from
+S_STD_KR_CIT doc
+where idx.batch = doc.batch
+and idx.dc_application_num = (doc.ori_app_country || doc.ori_app_number)
+and idx.dc_application_date = to_char(doc_ori_app_date, 'yyyyMMdd')
+and idx.dc_pulication_num = (doc.sta_pub_country || doc.sta_pub_number || doc.sta_pub_kind)
+and idx= to_char(doc.sta_pub_date, 'yyyyMMdd')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select * from S_MADRID_BRAND_PURCHASE where INTREGN is null;
+
+
+
+
+
+
+
+
+
+/****13 校验分析****/
+select count(*) from
+s_index_file_detail id 
+where id.data_res = '中国标准化简单引文数据'
+and id.dc_application_num is null
+
+select 
+count(*)
+from
+S_CHINA_STANDARD_SIMPCITATION doc
+where doc.ori_app_number is null
+
+
+
+
+with allrecs as
+(
+select
+idx.id idx_id, d.id doc_id
+from
+(
+select
+id.id, id.batch, id.dc_application_num
+from
+s_index_file_detail id 
+where id.data_res = '中国标准化简单引文数据'
+) idx full join S_CHINA_STANDARD_SIMPCITATION d
+on
+idx.batch = d.batch
+and
+idx.dc_application_num = d.ori_app_country||d.ori_app_number
+)
+select 
+count(*)
+from
+allrecs where doc_id is null
+union
+select
+count(*)
+from
+allrecs where idx_id is null
+;
+
+
+
+select
+count(1) all_count
+from
+s_index_file_detail idx
+where idx.data_res = '中国标准化简单引文数据'
+and 
+not exists
+(
+select
+1
+from
+S_CHINA_STANDARD_SIMPCITATION doc
+where idx.batch = doc.batch
+and idx.dc_application_num = (doc.ori_app_country || doc.ori_app_number)
+)
+union
+select
+count(1) all_count
+from
+S_CHINA_STANDARD_SIMPCITATION doc
+where not exists
+(
+select
+1
+from
+s_index_file_detail idx
+where idx.data_res = '中国标准化简单引文数据'
+and idx.batch = doc.batch
+and idx.dc_application_num = (doc.ori_app_country || doc.ori_app_number)
+)
+----------多余索引
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+where
+id.data_res = '中国标准化简单引文数据'
+and
+not exists
+(
+select 1 from S_CHINA_STANDARD_SIMPCITATION d
+where 
+d.batch = id.batch
+and
+id.dc_application_num = d.ori_app_country||d.ori_app_number
+);
+
+
+
+
+
+
+
+
+
+
+select * from s_index_file_detail idl where idl.data_res = '中国标准化简单引文数据';-- 13
+select * from S_CHINA_STANDARD_SIMPCITATION;--13
+select * from s_np_index_file_detail idl where idl.data_res = '中国商标';-- 132
+select * from S_CHINA_BRAND;--132
+select * from s_np_index_file_detail idl where idl.data_res = '中国商标许可数据';-- 133
+select * from S_CHINA_BRAND_LICENSE;--133
+select * from s_np_index_file_detail idl where idl.data_res = '中国商标转让数据';-- 134
+select * from S_CHINA_BRAND_TRANSFER;--134
+select * from s_np_index_file_detail idl where idl.data_res = '马德里商标进入中国';-- 136
+select * from S_MADRID_BRAND_ENTER_CHINA;--136
+select * from s_np_index_file_detail idl where idl.data_res = '中国驰名商标数据';-- 137
+select * from S_CHINA_WELLKNOWN_BRAND;--137
+select * from s_np_index_file_detail idl where idl.data_res = '美国申请商标';-- 138
+select * from S_AMERICA_APPLY_BRAND;--138
+select * from s_np_index_file_detail idl where idl.data_res = '美国转让商标';-- 139
+select * from S_AMERICA_TRANSFER_BRAND;--139
+select * from s_np_index_file_detail idl where idl.data_res = '中外期刊的著录项目与文摘数据';-- 153
+select * from S_JOURNAL_PROJECT_ABSTRACT;--153
+select * from s_np_index_file_detail idl where idl.data_res = '中国法院判例初加工数据';-- 162
+select * from S_CHINA_COURTCASE_PROCESS;--162
+select * from s_np_index_file_detail idl where idl.data_res = '马德里商标购买数据';-- 172
+select * from S_MADRID_BRAND_PURCHASE;--172
+select * from s_np_index_file_detail idl where idl.data_res = '中国专利代理知识产权法律法规加工数据';-- 180
+select * from S_CHINA_PATENT_LAWSPROCESS;--180
+select * from s_index_file_detail idl where idl.data_res = '世界专利法律状态（INPADOC）（标准化）';-- 231
+select * from S_WORLD_PATENT_LAWSTATUS;--231
+select * from s_index_file_detail idl where idl.data_res = '日本引文(STD_JP_CIT)（标准化）'-- 232
+select * from S_STD_JP_CIT--232
+select * from s_index_file_detail idl where idl.data_res = '韩国引文(STD_KR_CIT)（标准化）';-- 233
+select * from S_STD_KR_CIT;--233
+select * from s_index_file_detail idl where idl.data_res = '韩国法律状态数据(STD_KR_PRS)（标准化）';-- 234
+select * from S_STD_KR_PRS;--234
+
+
+
+
+select
+id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
+from
+s_index_file_detail id
+where
+id.data_res = '中国标准化简单引文数据'
+and
+not exists
+(
+select 1 from S_CHINA_STANDARD_SIMPCITATION d
+where 
+d.batch = id.batch
+and
+id.dc_application_num = d.ori_app_country||d.ori_app_number
+);
+
+
+
+
+
+
+
+
+
+
+
+
+select * from S_CHINA_STANDARD_SIMPCITATION; --13
+select * from S_CHINA_BRAND; --132
+select * from S_CHINA_BRAND_LICENSE; --133
+select * from S_CHINA_BRAND_TRANSFER; --134
+select * from S_MADRID_BRAND_ENTER_CHINA; --136
+select * from S_CHINA_WELLKNOWN_BRAND; --137
+select * from S_AMERICA_APPLY_BRAND; --138
+select * from S_AMERICA_TRANSFER_BRAND; --139
+select * from S_JOURNAL_PROJECT_ABSTRACT; --153
+select * from S_CHINA_COURTCASE_PROCESS; --162
+select * from S_MADRID_BRAND_PURCHASE; --172
+select * from S_CHINA_PATENT_LAWSPROCESS; --180
+select * from S_WORLD_PATENT_LAWSTATUS; --231
+select * from S_STD_JP_CIT; --232
+select * from S_STD_KR_CIT; --233
+select * from S_STD_KR_PRS; --234
+
+
+
+
+
+
+
+
+
+
+--13
+update S_CHINA_STANDARD_SIMPCITATION doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--132
+update S_CHINA_BRAND doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--133
+update S_CHINA_BRAND_LICENSE doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--134
+update S_CHINA_BRAND_TRANSFER doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--136
+update S_MADRID_BRAND_ENTER_CHINA doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--137
+update S_CHINA_WELLKNOWN_BRAND doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--138
+update S_AMERICA_APPLY_BRAND doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--139
+update S_AMERICA_TRANSFER_BRAND doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--153
+update S_JOURNAL_PROJECT_ABSTRACT doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--162
+update S_CHINA_COURTCASE_PROCESS doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--172
+update S_MADRID_BRAND_PURCHASE doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--180
+update S_CHINA_PATENT_LAWSPROCESS doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--231
+update S_WORLD_PATENT_LAWSTATUS doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--232
+update S_STD_JP_CIT doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--233
+update S_STD_KR_CIT doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+--234
+update S_STD_KR_PRS doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+alter table S_CHINA_STANDARD_SIMPCITATION add batch varchar2(1000);
+alter table S_CHINA_BRAND add batch varchar2(1000);
+alter table S_CHINA_BRAND_LICENSE add batch varchar2(1000);
+alter table S_CHINA_BRAND_TRANSFER add batch varchar2(1000);
+alter table S_MADRID_BRAND_ENTER_CHINA add batch varchar2(1000);
+alter table S_CHINA_WELLKNOWN_BRAND add batch varchar2(1000);
+alter table S_AMERICA_APPLY_BRAND add batch varchar2(1000);
+alter table S_AMERICA_TRANSFER_BRAND add batch varchar2(1000);
+alter table S_JOURNAL_PROJECT_ABSTRACT add batch varchar2(1000);
+alter table S_CHINA_COURTCASE_PROCESS add batch varchar2(1000);
+alter table S_MADRID_BRAND_PURCHASE add batch varchar2(1000);
+alter table S_CHINA_PATENT_LAWSPROCESS add batch varchar2(1000);
+alter table S_WORLD_PATENT_LAWSTATUS add batch varchar2(1000);
+alter table S_STD_JP_CIT add batch varchar2(1000);
+alter table S_STD_KR_CIT add batch varchar2(1000);
+alter table S_STD_KR_PRS add batch varchar2(1000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select * from s_index_file_info inf where inf.data_res = '中国标准化简单引文数据' and inf.batch is not null;
+select * from s_index_file_detail dtl where dtl.data_res = '中国标准化简单引文数据' and dtl.batch is not null;
+
+
+
+alter table s_index_file_info drop column application_num;
+alter table s_np_index_file_info drop column application_num;
 
 
 
@@ -18,8 +2043,8 @@ update s_data_resource_types_detail dtl set dtl.haschecker = 'Y' where dtl.id in
 commit;
 
 
-select * from S_FRENCH_DESIGN_PATENT;
 
+select * from S_FRENCH_DESIGN_PATENT;
 select * from S_GERMAN_DESIGN_PATENT;
 
 
@@ -572,7 +2597,53 @@ select dtl.haschecker from s_data_resource_types_detail dtl;
 
 6,13,50,52,54,55,103,104,105,106,107,108,213,215,216,217,218,219,220,221,222,223,224,229,230
 
-----生出错误数据处理语句块
+
+
+
+
+select 
+listagg(odtl.id, ',') within group (order by id)
+from
+(
+select dtl.*, case (select 1 from user_tab_columns tc
+where tc.TABLE_NAME = dtl.table_name and tc.COLUMN_NAME = upper('ori_pub_date')) when 1 then 1 else 0 end as sta_doc  from s_data_resource_types_detail dtl 
+) odtl
+where sta_doc = 1 and odtl.implemented_import_logic = 'Y' and odtl.id not in (3, 6,13,50,51,52,53,54,55,103,104,105,106,107,108,213,215,216,217,218,219,220,221,222,223,224,229,230);
+
+
+where exists
+(
+select 1 from user_tab_columns tc
+where tc.TABLE_NAME = dtl.table_name and tc.TABLE_NAME = upper('ori_pub_date')
+)
+
+select * from user_tab_columns tc where tc.COLUMN_NAME
+
+
+
+select * from user_tab_columns;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----生成错误数据处理语句块
 select
 '
 
@@ -581,7 +2652,10 @@ select
 ----'||dtl.id||' '||dtl.chinese_name||'
 declare
  v_count number;
+ v_data_count number;
 begin
+  
+
   select count(1) into v_count
   from user_tables ut
   where ut.TABLE_NAME = ''S_ERROR_DOC_BACKUP_'||case
@@ -615,6 +2689,193 @@ where
 dtl.id 
 in 
 (3, 6,13,50,51,52,53,54,55,103,104,105,106,107,108,213,215,216,217,218,219,220,221,222,223,224,229,230);
+
+
+
+
+
+
+
+
+
+
+----生成错误数据清理语句块 所有
+select
+'
+
+
+
+----'||dtl.id||' '||dtl.chinese_name|| decode(dtl.is ' ***可用, 谨慎执行
+declare
+ v_count number;
+ v_data_count number;
+ v_immidiate_sql varchar2(4000);
+begin
+  select count(1) into v_data_count
+  from '||dtl.table_name||'
+  where  56 <> length(doc_file_name) or ori_pub_date is null;
+  
+  dbms_output.put_line(''v_data_count = '' || v_data_count);  
+
+  select count(1) into v_count
+  from user_tables ut
+  where ut.TABLE_NAME = ''S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||''';
+
+
+  if v_count = 0
+  then
+    v_immidiate_sql := ''create table S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' as select * from '||dtl.table_name||' where 56 <> length(doc_file_name) or ori_pub_date is null'';
+  else
+    v_immidiate_sql := ''insert into S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' select * from '||dtl.table_name||' where 56 <> length(doc_file_name) or ori_pub_date is null'';
+  end if;
+  execute immediate v_immidiate_sql;
+  dbms_output.put_line('v_immidiate_sql = ' || v_immidiate_sql);
+  delete from '||dtl.table_name||' where 56 <> length(doc_file_name) or ori_pub_date is null;
+  commit;
+exception
+  when others then
+    rollback;
+end'  
+as SQLEXPR
+from
+(select dtli.*, case (select 1 from user_tab_columns tc
+where tc.TABLE_NAME = dtli.table_name and tc.COLUMN_NAME = upper('ori_pub_date')) when 1 then 1 else 0 end as sta_doc  from s_data_resource_types_detail dtli 
+) dtl
+where dtl.implemented_import_logic = 'Y'
+order by  dtl.id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----生成错误数据清理语句块 所有
+select
+case sta_doc 
+  when 1 
+  then
+'
+
+
+
+----'||dtl.id||' '||dtl.chinese_name||' ***可用, 谨慎执行
+declare
+ v_count number;
+begin
+  select count(1) into v_count
+  from user_tables ut
+  where ut.TABLE_NAME = ''S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||''';
+  if v_count = 0
+  then
+    execute immediate ''create table S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' as select * from '||dtl.table_name||' where 56 <> length(doc_file_name) or ori_pub_date is null'';
+  else
+    execute immediate ''insert into S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' select * from '||dtl.table_name||' where 56 <> length(doc_file_name) or ori_pub_date is null'';
+  end if;
+  delete from '||dtl.table_name||' where 56 <> length(doc_file_name) or ori_pub_date is null;
+  commit;
+exception
+  when others then
+    rollback;
+end'  
+  
+  
+else
+  
+   
+'
+
+
+
+----'||dtl.id||' '||dtl.chinese_name||' !!!!不可用 千万不要执行, 非常危险!!!
+declare
+ v_count number;
+begin
+  select count(1) into v_count
+  from user_tables ut
+  where ut.TABLE_NAME = ''S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||''';
+  if v_count = 0
+  then
+    execute immediate ''create table S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' as select * from '||dtl.table_name||' /***where 56 <> length(doc_file_name) or ori_pub_date is null***/'';
+  else
+    execute immediate ''insert into S_ERROR_DOC_BACKUP_'||case
+  when length(to_char(dtl.id)) < 3
+    then lpad(to_char(dtl.id), 3, '0')
+      else replace(to_char(dtl.id), '.', '')
+end||' select * from '||dtl.table_name||' /***where 56 <> length(doc_file_name) or ori_pub_date is null***/'';
+  end if;
+  delete from '||dtl.table_name||' /***where 56 <> length(doc_file_name) or ori_pub_date is null***/;
+  commit;
+exception
+  when others then
+    rollback;
+end'   
+end as SQLEXPR
+from
+(select dtli.*, case (select 1 from user_tab_columns tc
+where tc.TABLE_NAME = dtli.table_name and tc.COLUMN_NAME = upper('ori_pub_date')) when 1 then 1 else 0 end as sta_doc  from s_data_resource_types_detail dtli 
+) dtl
+where dtl.implemented_import_logic = 'Y'
+order by  dtl.id;
+
+
+
 
 
 
@@ -1011,7 +3272,7 @@ begin
   not exists
   (
   select 1 from S_CHINA_PATENT_TEXTCODE d
-  where d.doc_file_name = id.doc_file_name
+  where d.id.doc_file_name
   )';
   end if;
 end;
@@ -1069,7 +3330,7 @@ and
 not exists
 (
 select 1 from '||upper(dtd.table_Name)||' d
-where d.doc_file_name = id.doc_file_name
+where d.id.doc_file_name
 );
 
 ----'|| to_char(dtd.id) || ' ' || dtd.chinese_name ||' 多余数据列表
@@ -1091,7 +3352,7 @@ select 1
 from
 s_index_file_detail id
 where
-sta.doc_file_name = id.doc_file_name
+sta.id.doc_file_name
 );
 ' as SQL1,
 '
@@ -1200,7 +3461,7 @@ left join
         1
         from
         '||upper(dtd.table_Name)||' s
-        where s.doc_file_name = d.doc_file_name
+        where s.d.doc_file_name
       )
       group by d.pub_date
 ) matched_Rec
@@ -1221,11 +3482,72 @@ order by num;
 
 
 
+/***生成数据表查询语句***/
+select dtl.id, dtl.chinese_name, dtl.table_name,
+'
+select * from '||dtl.table_name||';-----'||dtl.id||'  '||dtl.chinese_name||'  '||'
+'
+from s_data_resource_types_detail dtl;
+
+
+alter table s_data_resource_types_detail add is_Pat varchar2(20);
+update s_data_resource_types_detail set is_pat = 'N' where id in (132,133,134,136,137,138,139,148,153,162,168,169,170,172,180);
+
+update s_data_resource_types_detail set is_pat = 'Y' where id not in (132,133,134,136,137,138,139,148,153,162,168,169,170,172,180);
+commit;
+
+select * from s_data_resource_types_detail;
+
+
+select * from s_index_file_detail doc where doc.data_res = ''
+
+
+-----非专利类型 列表 132,133,134,136,137,138,139,153,162,172,180
 -----生成刷新视图语句
 select
 dtd.id as id, dtd.chinese_name, chr(10) || chr(10) || chr(10) || '----**'||dtd.id||'   '||dtd.chinese_name||'**
-call dbms_mview.refresh(''MV_IDX_INFO_STAT_BY_PUBDATE'');
-----索引未匹配信息
+----查询索引表
+select * from '||case dtd.is_pat when 'Y' then 's_index_file_detail ' else 's_np_index_file_detail' end||' doc where doc.data_res = '''||dtd.chinese_name||''';
+----查询数据表信息
+select * from '||dtd.table_name||';-----'||dtd.id||'  '||dtd.chinese_name||';
+---专利数据更新doc_file_name: 执行时机：数据入库完成后，生成或刷新统计视图前执行；统计结果当数据数量大部分为0时，应该检查该语句是否执行过，没执行过，执行后刷新统计视图
+update  '||dtd.table_name||'  t set doc_File_Name = substr(t.archive_inner_path, instr(t.archive_inner_path, ''/'', -1, 1) + 1);
+commit;
+'||
+case dtd.is_pat
+  when 'N' 
+    then 
+'
+----非专利 更新批次：执行时机：数据入库完成后，生成或刷新统计视图前执行；统计结果当数据数量大部分为0时，应该检查该语句是否执行过，没执行过，执行后刷新统计视图
+update '||dtd.table_name||' doc set doc.batch = decode(instr(doc.file_path, ''\''), 0, substr(doc.file_path, instr(doc.file_path, ''/'', -1, 2) + 1, instr(doc.file_path, ''/'', -1, 1) - instr(doc.file_path, ''/'', -1, 2) -1), substr(doc.file_path, instr(doc.file_path, ''\'', -1, 2) + 1, instr(doc.file_path, ''\'', -1, 1) - instr(doc.file_path, ''\'', -1, 2) -1));  
+commit;
+' 
+  else '' 
+end
+||'  
+----查询统计结果
+select * from MV_EXTRA_IDX_INFO_'||
+case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+  else replace(to_char(dtd.id), '.', '')
+end||';
+select * from MV_EXTRA_DOC_INFO_'||
+case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+  else replace(to_char(dtd.id), '.', '')
+end||';
+select * from MV_CHECKS_RESULT_'||
+case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+  else replace(to_char(dtd.id), '.', '')
+end||';
+select * from '||case when dtd.is_pat = 'Y' then 'MV_IDX_INFO_STAT_BY_PUBDATE' else 'MV_NP_IDX_INFO_STAT_BY_BATCH' end||'  where data_res = '''||dtd.chinese_name||'''; 
+----所有入库信息统计：有新索引入库完成后更新
+call dbms_mview.refresh('''||case when dtd.is_pat = 'Y' then 'MV_IDX_INFO_STAT_BY_PUBDATE' else 'MV_NP_IDX_INFO_STAT_BY_BATCH' end ||''');
+----索引未匹配信息：设置doc_file_name或batch后刷新
 call dbms_mview.refresh(''MV_EXTRA_IDX_INFO_'||
 case
   when length(to_char(dtd.id)) < 3
@@ -1233,7 +3555,7 @@ case
   else replace(to_char(dtd.id), '.', '')
 end
 ||''');
-----多余数据信息
+----多余数据信息：设置doc_file_name或batch后刷新
 call dbms_mview.refresh(''MV_EXTRA_DOC_INFO_'||
 case
   when length(to_char(dtd.id)) < 3
@@ -1241,7 +3563,7 @@ case
   else replace(to_char(dtd.id), '.', '')
 end
 ||''');
-----刷新校验结果
+----刷新校验结果：设置doc_file_name或batch后刷新
 call dbms_mview.refresh(''MV_CHECKS_RESULT_'||
 case
   when length(to_char(dtd.id)) < 3
@@ -1250,183 +3572,8 @@ case
 end
 ||''');'
 from s_data_resource_types_detail dtd
-order by dtd.id
-
-
-
-
-
-
-
-
-
-
-
-
-
-select 
-case 
-  when length(to_char(dtd.id)) < 3 
-    then lpad(to_char(dtd.id), 3, '0') 
-      else replace(to_char(dtd.id), '.', '') 
-end as Formatted_Name, 
-to_char(dtd.id, '000') 
-from s_data_resource_types_detail dtd;
-
-
-select count(1) from user_mviews where mview_name = upper('');
-
-
-
-
-
-欧专局专利全文文本数据（标准化）
-      select
-      count(1)
-      from
-      s_index_file_detail d
-      where d.data_res='瑞士专利全文代码化数据（标准化）'
-      and
-      exists
-      (
-        select
-        1
-        from
-        S_SWISS_PATENT_FULLTEXTCODE s
-        where s.doc_file_name = d.doc_file_name
-      )
-
-
-
-select * from S_SWISS_PATENT_FULLTEXTCODE;
-
-      select
-      *
-      from
-      s_index_file_detail d
-      where d.data_res='欧专局专利全文文本数据（标准化）';
-
-update s_index_file_detail id set id.doc_file_name = substr(id.doc_file, instr(id.doc_file, '\', -1, 1) + 1)
-where id.data_res in ('瑞士专利全文代码化数据（标准化）', '欧专局专利全文文本数据（标准化）')
-parallel 5
-;
-
-
-update s_index_file_detail id set id.doc_file_name = substr(id.doc_file, instr(id.doc_file, '\', -1, 1) + 1)
-where id.data_res = '瑞士专利全文代码化数据（标准化）';
-
-update s_index_file_detail id set id.doc_file_name = substr(id.doc_file, instr(id.doc_file, '\', -1, 1) + 1)
-where id.data_res = '欧专局专利全文文本数据（标准化）';
-commit;
-
-select * from 
-
-
-
-
-select 
-id.doc_file_name
-from
-s_index_file_detail id
-where
-id.data_res = '欧专局专利全文文本数据（标准化）'
-
-
-update s_index_file_detail id set id.doc_file_name = substr(id.doc_file, instr(id.doc_file, '\', -1, 1) + 1)
-where id.data_res in ('瑞士专利全文代码化数据（标准化）', '欧专局专利全文文本数据（标准化）')
-parallel 5
-
-
-
-select * from S_CHINA_PATENT_STANDARDFULLTXT;
-
-
-
-
-      select
-      d.pub_date, count(1) as matched_count
-      from
-      s_index_file_detail d
-      where d.data_res='瑞士专利全文代码化数据（标准化）'
-      and
-      exists
-      (
-        select
-        1
-        from
-        S_SWISS_PATENT_FULLTEXTCODE s
-        where s.doc_file_name = d.doc_file_name
-      )
-      group by d.pub_date
-      
-      
-      
-      
-select count(*) from  S_SWISS_PATENT_FULLTEXTCODE;
-
-
-
-select info.fully_imported, count(1) from s_index_file_info info where info.data_res = '欧专局专利全文文本数据（标准化）'
-
-
-
-select info.fully_imported, count(1) from s_index_file_info info where info.data_res = '瑞士专利全文代码化数据（标准化）' group by info.fully_imported;
-
-
-
-select * from 
-
-
-
-
-dbms_mview.refresh('MV_IDX_INFO_STAT_BY_PUBDATE');
-
-
-
-
-
-
-select 3 as id, 'S_CHINA_PATENT_STANDARDFULLTXT' as tableName, '中国专利标准化全文文本数据' as cn_Name, file_path  from S_CHINA_PATENT_STANDARDFULLTXT where rownum =1 
- union all 
-select 51 as id, 'S_EUROPEAN_PATENT_FULLTEXT' as tableName, '欧专局专利全文文本数据（标准化）' as cn_Name, file_path  from S_EUROPEAN_PATENT_FULLTEXT where rownum =1 
- union all 
-select 52 as id, 'S_KOREAN_PATENT_FULLTEXTCODE' as tableName, '韩国专利全文代码化数据（标准化）' as cn_Name, file_path  from S_KOREAN_PATENT_FULLTEXTCODE where rownum =1 
- union all 
-select 53 as id, 'S_SWISS_PATENT_FULLTEXTCODE' as tableName, '瑞士专利全文代码化数据（标准化）' as cn_Name, file_path  from S_SWISS_PATENT_FULLTEXTCODE where rownum =1 
- union all 
-select 54 as id, 'S_BRITISH_PATENT_FULLTEXTCODE' as tableName, '英国专利全文代码化数据（标准化）' as cn_Name, file_path  from S_BRITISH_PATENT_FULLTEXTCODE where rownum =1 
- union all 
-select 55 as id, 'S_JAPAN_PATENT_FULLTEXTCODE' as tableName, '日本专利全文代码化数据（标准化）' as cn_Name, file_path  from S_JAPAN_PATENT_FULLTEXTCODE where rownum =1 
-
-
-          select
-          *
-          from
-          s_index_file_info s
-          where
-          s.data_res = '瑞士专利全文代码化数据（标准化）'
-
-
-          select
-          s.date_publication as pub_date,
-          sum(s.doclist_count) as pat_cnt_Index,
-          count(*),
-          count(case when s.fully_imported = 'Y' and s.self_check_successed = 'Y' then 1 else null end)
-          from
-          s_index_file_info s
-          where
-          s.data_res = '瑞士专利全文代码化数据（标准化）'
-          and
-          s.fully_imported = 'Y'
-          group by s.date_publication
-          having count(*) = count(case when s.fully_imported = 'Y' and s.self_check_successed = 'Y' then 1 else null end)
-
-
-
-update s_index_file_info set self_check_successed = 'Y';
-
-
-
+where dtd.haschecker = 'Y'
+order by dtd.is_pat desc, dtd.id
 
 
 
@@ -1547,7 +3694,7 @@ and
 doc.doc_file_name is not null
 ) b
 on
-a.doc_file_name = b.doc_file_name
+a.b.doc_file_name
 where b.doc_file_name is null;
 
 
@@ -1576,7 +3723,7 @@ where
 '19991222' = to_char(doc.ori_pub_date, 'yyyyMMdd')
 ) b
 on
-a.doc_file_name = b.doc_file_name
+a.b.doc_file_name
 where a.doc_file_name is null;
 
 
@@ -1615,7 +3762,7 @@ where a.doc_file_name is null;
 
 and
 on
-ido.doc_file_name = dup_doc_file_names.doc_file_name
+ido.dup_doc_file_names.doc_file_name
 
 
 
@@ -1653,7 +3800,7 @@ s_index_file_detail ido join (select
     group by id.doc_file_name 
     having count(1) > 1) dup_doc_file_names
 on 
-ido.doc_file_name = dup_doc_file_names.doc_file_name
+ido.dup_doc_file_names.doc_file_name
 
 
 
@@ -1675,7 +3822,7 @@ group by sta.doc_file_name
 having count(1) > 1
 ) b
 on
-osta.doc_file_name = b.doc_file_name
+osta.b.doc_file_name
 
 
 
@@ -1751,7 +3898,7 @@ select
  19    having count(1) > 1
  20    ) dup_odc
  21    where
- 22    dup_odc.doc_file_name = ido.doc_file_name
+ 22    dup_odc.ido.doc_file_name
  23  )
  24  ;
 
@@ -1789,7 +3936,7 @@ s_index_file_detail ido join (select
     id.date_publication = '&v_date_publication'
     group by id.doc_file_name 
     having count(1) > 1) dup_doc_file_names 
-ido.doc_file_name = dup_doc_file_names.doc_file_name
+ido.dup_doc_file_names.doc_file_name
 
 
 
@@ -1800,7 +3947,7 @@ exists
   from 
   dup_doc_file_names
   where
-  dup_odc.doc_file_name = ido.doc_file_name
+  dup_odc.ido.doc_file_name
 )
 
 
@@ -1846,7 +3993,7 @@ and
 not exists
 (
 select 1 from S_CHINA_PATENT_STANDARDFULLTXT d
-where d.doc_file_name = id.doc_file_name
+where d.id.doc_file_name
 )
 order by id.pub_date, id.doc_file
 
@@ -1860,7 +4007,7 @@ select id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_na
 from 
 s_index_file_detail id
 where
-doc_file_name = any(
+any(
 select doc_file_name
 from
 (
@@ -1990,7 +4137,7 @@ left join
         1
         from
         S_CHINA_PATENT_STANDARDFULLTXT s
-        where s.doc_file_name = d.doc_file_name
+        where s.d.doc_file_name
       )
       group by d.pub_date
 ) matched_Rec
@@ -2023,7 +4170,7 @@ from
 s_index_file_detail id
 where 
 
-sta.doc_file_name = id.doc_file_name
+sta.id.doc_file_name
 )
 order by sta.ori_pub_date, doc_file_name
 
@@ -2056,7 +4203,7 @@ S_CHINA_PATENT_STANDARDFULLTXT sta,
       group by d.doc_file_name
 ) docList
 where
-sta.doc_file_name = docList.doc_file_name
+sta.docList.doc_file_name
 order by sta.ori_pub_date, doc_file_name
 
 
@@ -2087,7 +4234,7 @@ s_index_file_detail id
 where 
 id.data_res = '中国专利标准化全文文本数据'
 and
-sta.doc_file_name = id.doc_file_name
+sta.id.doc_file_name
 )
 
 
@@ -2095,7 +4242,7 @@ sta.doc_file_name = id.doc_file_name
 
 
 
-sta.doc_file_name = docList.doc_file_name
+sta.docList.doc_file_name
 order by sta.ori_pub_date, doc_file_name
 
 
@@ -2145,7 +4292,7 @@ sta.id, to_char(sta.ori_pub_date, 'yyyyMMdd') pub_date, sta.file_path, sta.archi
 from 
 S_CHINA_PATENT_STANDARDFULLTXT sta
 where
-sta.doc_file_name = any(
+sta.any(
 select doc_file_name
 from
 (
@@ -2314,7 +4461,7 @@ left join
         1
         from
         S_CHINA_PATENT_STANDARDFULLTXT s
-        where s.doc_file_name = d.doc_file_name
+        where s.d.doc_file_name
       )
       group by d.pub_date
 ) matched_Rec
@@ -2367,7 +4514,7 @@ from
           and
           id.date_publication = s.date_publication
           and
-          not exists (select 1 from S_CHINA_PATENT_STANDARDFULLTXT sta where sta.doc_file_name = id.doc_file_name)
+          not exists (select 1 from S_CHINA_PATENT_STANDARDFULLTXT sta where sta.id.doc_file_name)
           ) as ex_idx_pat_cnt --统计doc_file_name数量
         from 
         s_index_file_info s
@@ -2392,7 +4539,7 @@ full join
           (
           select 1 from s_index_file_detail iid
           where 
-          iid.doc_file_name = sta.doc_file_name)
+          iid.sta.doc_file_name)
         ) as ex_doc_pnt_count
         from 
         S_CHINA_PATENT_STANDARDFULLTXT d
@@ -2490,7 +4637,7 @@ sum(s.doclist_count) as pat_cnt_Index,
   and
   id.date_publication = s.date_publication
   and
-  not exists (select 1 from S_CHINA_PATENT_STANDARDFULLTXT sta where sta.doc_file_name = id.doc_file_name)
+  not exists (select 1 from S_CHINA_PATENT_STANDARDFULLTXT sta where sta.id.doc_file_name)
   ) as ex_idx_pat_cnt --统计doc_file_name数量
 from 
 s_index_file_info s
@@ -2866,7 +5013,7 @@ count(d.doc_file_name)
 from
 s_index_file_detail d
 where 
-d.doc_file_name = some
+d.some
 (
 select 
 t.doc_file_name
@@ -2879,7 +5026,7 @@ count(t.doc_file_name)
 from
 S_CHINA_PATENT_STANDARDFULLTXT t
 where 
-t.doc_file_name = some
+t.some
 (
 select 
 d.doc_file_name
@@ -2901,7 +5048,7 @@ count(distinct d.doc_file_name)
 from
 s_index_file_detail d
 where 
-d.doc_file_name = some
+d.some
 (
 select 
 t.doc_file_name
@@ -2921,7 +5068,7 @@ count(distinct t.doc_file_name)
 from
 S_CHINA_PATENT_STANDARDFULLTXT t
 where 
-t.doc_file_name = some
+t.some
 (
 select 
 d.doc_file_name
@@ -2941,7 +5088,7 @@ length(t.doc_file_name) =  56
 and
 t.sta_app_number is not null
 and
-t.doc_file_name = some
+t.some
 (
 select 
 d.doc_file_name
@@ -3214,17 +5361,17 @@ S_CHINA_PATENT_STANDARDFULLTXT d
 
 
 ----修正索引表doc_file_name错误问题
-update s_index_file_detail id set id.doc_file_name = substr(id.doc_file, instr(id.doc_file, '\', -1, 1) + 1);
+update s_index_file_detail id set id.substr(id.doc_file, instr(id.doc_file, '\', -1, 1) + 1);
 
 alter table  add doc_File_Name varchar2(500);
 
-update S_CHINA_PATENT_STANDARDFULLTXT t set doc_File_Name = substr(t.archive_inner_path, instr(t.archive_inner_path, '/', -1, 1) + 1);
+update S_CHINA_PATENT_STANDARDFULLTXT t set substr(t.archive_inner_path, instr(t.archive_inner_path, '/', -1, 1) + 1);
 
 
 select 
 dtd.id, 
 dtd.chinese_name, 
-'update  '||dtd.table_name||'  t set doc_File_Name = substr(t.archive_inner_path, instr(t.archive_inner_path, ''/'', -1, 1) + 1);' as upd_SQL
+'update  '||dtd.table_name||'  t set substr(t.archive_inner_path, instr(t.archive_inner_path, ''/'', -1, 1) + 1);' as upd_SQL
 from s_data_resource_types_detail dtd
 order by dtd.id
 ;
@@ -3241,7 +5388,7 @@ t.doc_file_name is null
 
 
 /**添加doc_file_name字段**/
-alter table S_CHINA_PATENT_STANDARDFULLTXT add doc_File_Name varchar2(500);update S_CHINA_PATENT_STANDARDFULLTXT t set doc_File_Name = substr(t.archive_inner_path, instr(t.archive_inner_path, '/', -1, 1) + 1);
+alter table S_CHINA_PATENT_STANDARDFULLTXT add doc_File_Name varchar2(500);update S_CHINA_PATENT_STANDARDFULLTXT t set substr(t.archive_inner_path, instr(t.archive_inner_path, '/', -1, 1) + 1);
 
 select 
 *

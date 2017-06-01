@@ -1,3 +1,87 @@
+select dtl.id, 'select * from '||dtl.table_name || '; --' || dtl.id from s_data_resource_types_detail dtl where dtl.id in (13, 132,133,134,136,137,138,139,153,162,172,180, 231, 232, 233, 234);
+
+
+
+--13
+update S_CHINA_STANDARD_SIMPCITATION doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1);
+
+
+alter table S_CHINA_STANDARD_SIMPCITATION add batch varchar2(1000);
+alter table S_CHINA_BRAND add batch varchar2(1000);
+alter table S_CHINA_BRAND_LICENSE add batch varchar2(1000);
+alter table S_CHINA_BRAND_TRANSFER add batch varchar2(1000);
+alter table S_MADRID_BRAND_ENTER_CHINA add batch varchar2(1000);
+alter table S_CHINA_WELLKNOWN_BRAND add batch varchar2(1000);
+alter table S_AMERICA_APPLY_BRAND add batch varchar2(1000);
+alter table S_AMERICA_TRANSFER_BRAND add batch varchar2(1000);
+alter table S_JOURNAL_PROJECT_ABSTRACT add batch varchar2(1000);
+alter table S_CHINA_COURTCASE_PROCESS add batch varchar2(1000);
+alter table S_MADRID_BRAND_PURCHASE add batch varchar2(1000);
+alter table S_CHINA_PATENT_LAWSPROCESS add batch varchar2(1000);
+alter table S_WORLD_PATENT_LAWSTATUS add batch varchar2(1000);
+alter table S_STD_JP_CIT add batch varchar2(1000);
+alter table S_STD_KR_CIT add batch varchar2(1000);
+alter table S_STD_KR_PRS add batch varchar2(1000);
+
+
+
+select 
+doc.file_path, 
+substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1) 
+from 
+S_CHINA_STANDARD_SIMPCITATION doc;
+
+
+select 
+'--13' || chr(10) || 'update S_CHINA_STANDARD_SIMPCITATION doc set doc.batch = substr(doc.file_path, instr(doc.file_path, ''\'', -1, 2) + 1, instr(doc.file_path, ''\'', -1, 1) - instr(doc.file_path, ''\'', -1, 2) -1)'
+from
+dual;
+
+
+update S_CHINA_STANDARD_SIMPCITATION doc set doc.batch = substr(doc.file_path, instr(doc.file_path, '\', -1, 2) + 1, instr(doc.file_path, '\', -1, 1) - instr(doc.file_path, '\', -1, 2) -1)
+
+
+
+'alter table S_CHINA_STANDARD_SIMPCITATION add batch varchar2(1000);'
+
+
+
+
+select dtl.id, dtl.table_name, 
+'alter table '||dtl.table_name||' add batch varchar2(1000);' ,
+'--'||dtl.id||' ' || chr(10) || 'update '|| dtl.table_name ||' doc set doc.batch = substr(doc.file_path, instr(doc.file_path, ''\'', -1, 2) + 1, instr(doc.file_path, ''\'', -1, 1) - instr(doc.file_path, ''\'', -1, 2) -1);'
+from s_data_resource_types_detail dtl where dtl.id in (13, 132,133,134,136,137,138,139,153,162,172,180, 231, 232, 233, 234);
+
+
+
+select dtl.id,
+'select * from s_index_file_detail idl where idl.data_res = '''|| dtl.chinese_name ||''';-- '||dtl.id||''
+||
+chr(10)
+||
+'select * from '||dtl.table_name||';--' || dtl.id
+ expr from s_data_resource_types_detail dtl where dtl.id in (13, 231, 232, 233, 234)
+union
+select dtl.id,
+'select * from s_np_index_file_detail idl where idl.data_res = '''|| dtl.chinese_name ||''';-- '||dtl.id||'' 
+||
+chr(10)
+||
+'select * from '||dtl.table_name||';--' || dtl.id
+expr from s_data_resource_types_detail dtl where dtl.id in (132,133,134,136,137,138,139,153,162,172,180) 
+order by id;
+
+
+
+
+select dtl.chinese_name, dtl.table_name from s_data_resource_types_detail dtl order by dtl.id;
+
+
+
+
+
+
+
 select * from S_INDEX_FILE_DETAIL dtl where dtl.data_res='韩国法律状态数据(STD_KR_PRS)（标准化）' and rownum < 10;
 
 

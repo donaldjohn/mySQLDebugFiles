@@ -1,7 +1,145 @@
+select t.*, t.rowid from S_DATA_RESOURCE_TYPES_DETAIL t;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+create table S_STD_CN_PRS
+(
+  id                    VARCHAR2(100) not null,
+  app_number            VARCHAR2(200),
+  pub_date              DATE,
+  law_state             VARCHAR2(200),
+  law_state_information VARCHAR2(4000),
+  import_session_id     VARCHAR2(100),
+  import_time           DATE,
+  file_path             VARCHAR2(1000),
+  archive_inner_path    VARCHAR2(1000),
+  session_index         NUMBER,
+  doc_file_name         VARCHAR2(500)
+);
+comment on column S_STD_CN_PRS.id
+  is '主键';
+comment on column S_STD_CN_PRS.app_number
+  is '专利申请号';
+comment on column S_STD_CN_PRS.pub_date
+  is '法律状态公告日';
+comment on column S_STD_CN_PRS.law_state
+  is '法律状态';
+comment on column S_STD_CN_PRS.law_state_information
+  is '法律状态信息';
+alter table S_STD_CN_PRS
+  add primary key (ID);  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select t.*, t.rowid from S_DATA_RESOURCE_TYPES_DETAIL t where upper(t.table_name) = 'S_STD_CN_PRS';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+alter table S_CHINA_BRAND_TRANSFER modify nameinfo_name VARCHAR2(1000);
+alter table S_CHINA_BRAND_TRANSFER modify transferinfo_shrr_name VARCHAR2(4000);
+
+
+
+
+
+
+alter table s_china_brand_transfer modify nameinfo_name varchar2(1000);
+
+alter table s_China_Brand_Transfer modify transferinfo_shrr_name varchar2(4000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+delete from S_DOCDB t where t.file_path = '\\10.33.79.4\vol71_0\std_zip\DOCDB\20160524\WO\20101118\20101118-1-001.ZIP'
+
+
+
+
+select count(*) from S_CHINA_PATENT_TEXTCODE doc;
+
+
+select * from s_index_file_info inf where inf.data_res = '中国标准化简单引文数据' and inf.batch is not null;
+select * from s_index_file_detail dtl where dtl.data_res = '中国标准化简单引文数据' and dtl.batch is not null
+;
+
+
+
+
+
+
+
+
+
+
+
+
+alter table s_index_file_info drop column application_num;
+
+
 select * from s_data_resource_types_detail dtl where dtl.id in (13, 132, 138, 162, 172);
-
-
-
 
 
 select * from S_CHINA_STANDARD_SIMPCITATION s 

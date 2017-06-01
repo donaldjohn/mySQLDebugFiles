@@ -1,3 +1,93 @@
+select * from MV_EXTRA_DOC_INFO_234;
+
+
+create materialized view MV_EXTRA_DOC_INFO_234
+refresh force on demand
+as
+select 
+hdoc.id,
+hdoc.dc_publication_date,
+hdoc.dc_an, 
+hdoc.file_path, 
+hdoc.archive_inner_path
+from
+(
+  select
+  doc.batch,
+  doc.id,
+  (doc.ori_app_country || doc.ori_app_number) dc_an, 
+  doc.file_path,
+  to_char(doc.prspublicationdate, 'yyyyMMdd') dc_publication_date,
+  doc.archive_inner_path
+from
+S_STD_KR_PRS doc
+) hdoc
+where not exists
+(
+  select
+  1
+  from
+  s_index_file_detail idx
+  where idx.data_res = '韩国法律状态数据(STD_KR_PRS)（标准化）'
+  and
+  hdoc.batch = idx.batch
+  and hdoc.dc_an = idx.dc_an
+  and hdoc.dc_publication_date = idx.dc_publication_date
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     select
+      count(1) as countA
+      from
+      s_index_file_detail d
+      where d.data_res='世界专利法律状态（INPADOC）（标准化）'
+      union
+      select
+      count(1) as countA
+        from
+        S_WORLD_PATENT_LAWSTATUS s
+
+
+
+      select
+      *
+      from
+      S_WORLD_PATENT_LAWSTATUS s
+
+
+
+
 select 
 e.division_id, 
 job_id,
@@ -53,7 +143,6 @@ select 2 from dual
 
 select id, file_path, archive_inner_path, doc_file_name
 from 
-
 select 
 ido.pub_date, ido.pub_kind, ido.doc_file, ido.index_file_path, ido.doc_file_name 
 from 
