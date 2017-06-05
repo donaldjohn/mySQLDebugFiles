@@ -7,23 +7,12 @@ b.bytes/1024/1024||'M'字节数,
 sum(nvl(a.bytes,0))/1024/1024||'M' 剩余空间, 
 100 - sum(nvl(a.bytes,0))/(b.bytes)*100 占用百分比 
 from dba_free_space a,dba_data_files b 
-where a.file_id=b.file_id 
-group by b.tablespace_name,b.file_id,b.bytes 
+where  a.file_id=b.file_id 
+group by b.tablespace_name,b.file_id,b.bytes
 order by b.file_id;
-
+;
 
 /**查询表大小**/
-select 
-UPPER('s_index_file_detail'), 
-sum(seg.BYTES) /1024/1024/1024 || 'GB', seg.segment_type
-from 
-user_segments seg 
-where 
-seg.segment_name=UPPER('s_index_file_detail') 
-and 
-seg.segment_type= 'TABLE SUBPARTITION';
-
-
 select 
 seg.segment_name, seg.segment_type,
 sum(seg.BYTES) /1024/1024/1024 || 'GB' 
@@ -31,3 +20,8 @@ from
 user_segments seg 
 group by seg.segment_name, seg.segment_type
 order by sum(seg.BYTES) desc
+;
+
+
+
+

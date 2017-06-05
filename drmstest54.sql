@@ -1,3 +1,255 @@
+select * from s_index_file_info if order by if.import_time desc;
+
+select count(1) from s_index_file_detail id where id.index_info_id = '41c48b36-9ab7-40b6-8e6a-60053d4cff8c';
+
+
+b8dcd2b8-1fbf-465d-b7d6-8b6be99f206b
+
+select * from 
+
+
+
+
+
+update S_DATA_RESOURCE_TYPES_DETAIL dtl set dtl.haschecker = 'Y'
+where dtl.id in
+(
+240);
+commit;
+
+
+
+
+
+
+
+
+
+
+
+select '----'||dtl.id||'   '||dtl.chinese_name||
+'
+select * from '||dtl.table_name||' doc;'
+from s_data_resource_types_detail dtl order by dtl.id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select 'alter table '||dtl.TABLE_NAME||' add doc_file_name varchar2(1000);' from s_data_resource_types_detail dtl 
+where
+not exists 
+(
+select
+1
+from 
+user_tab_columns tc
+where
+tc.TABLE_NAME = upper(dtl.table_name)
+and
+(
+tc.COLUMN_NAME = upper('doc_file_name')
+)
+);
+
+
+
+alter table S_PATENT_PAYMENT_DI add doc_file_name varchar2(1000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select 'alter table '||dtl.TABLE_NAME||' add batch varchar2(1000);' from s_data_resource_types_detail dtl 
+where
+not exists 
+(
+select
+1
+from 
+user_tab_columns tc
+where
+tc.TABLE_NAME = upper(dtl.table_name)
+and
+(
+tc.COLUMN_NAME = upper('batch')
+)
+);
+
+
+alter table S_CHINA_PATENT_JUDGMENT add batch varchar2(1000);
+alter table S_JAPAN_DESIGN_PATENT add batch varchar2(1000);
+alter table S_DOCDB add batch varchar2(1000);
+alter table S_DOCDB add batch varchar2(1000);
+alter table S_MACAO_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_T_BIOLOGICAL_CN add batch varchar2(1000);
+alter table S_RUSSIAN_PATENT_ABSTRACTS add batch varchar2(1000);
+alter table S_STD_CN_PRS add batch varchar2(1000);
+alter table S_HONGKONG_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_FOREIGN_PATENT_FULLTEXT_PDF add batch varchar2(1000);
+alter table S_CHINA_BRAND_CLASSIFICATION add batch varchar2(1000);
+alter table S_KOREAN_PATENT_FULLTEXTCODE add batch varchar2(1000);
+alter table S_EUROPEAN_PATENT_FULLTEXT add batch varchar2(1000);
+alter table S_AMERICAN_DESIGN_PATENT add batch varchar2(1000);
+alter table S_T_MEDICINE_TRANS_T1 add batch varchar2(1000);
+alter table S_GERMAN_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_WIPO_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_AMERICAN_BRAND_USCLASSIFY add batch varchar2(1000);
+alter table S_AUSTRIA_PATENT_FULLTEXT add batch varchar2(1000);
+alter table S_FRENCH_DESIGN_PATENT add batch varchar2(1000);
+alter table S_CHINA_PATENT_STAND_TEXTIMAGE add batch varchar2(1000);
+alter table S_T_MEDICINE_HANDLE_T1 add batch varchar2(1000);
+alter table S_FRENCH_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_WORLD_LEGAL_STATUS add batch varchar2(1000);
+alter table S_AMERICA_TRIAL_BRAND add batch varchar2(1000);
+alter table S_AMERICAN_BRAND_GRAPHCLASSIFY add batch varchar2(1000);
+alter table S_BRITISH_PATENT_FULLTEXTCODE add batch varchar2(1000);
+alter table S_SWISS_PATENT_FULLTEXTCODE add batch varchar2(1000);
+alter table S_CHINA_PATENT_STANDARDFULLTXT add batch varchar2(1000);
+alter table S_AMERICAN_PATENT_FULLTEXT add batch varchar2(1000);
+alter table S_CANADIAN_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_CHINA_PATENT_INVALID add batch varchar2(1000);
+alter table S_CHINA_PATENT_TEXTIMAGE add batch varchar2(1000);
+alter table S_ZONE_CODE_BASE add batch varchar2(1000);
+alter table S_CHINA_PATENT_NOTICES add batch varchar2(1000);
+alter table S_CHINA_LAWSTATE_INDEXINGLIB add batch varchar2(1000);
+alter table S_CHINA_PATENT_TEXTCODE add batch varchar2(1000);
+alter table S_RUSSIAN_DESIGN_PATENT add batch varchar2(1000);
+alter table S_PATENT_FAMILY add batch varchar2(1000);
+alter table S_T_PHARMACEUTICAL_T1 add batch varchar2(1000);
+alter table S_T_BIOLOGICAL_FY add batch varchar2(1000);
+alter table S_PATENT_PAYMENT add batch varchar2(1000);
+alter table S_CHINA_PATENT_REVIEW add batch varchar2(1000);
+alter table S_CHINA_PATENT_LAWSTATE add batch varchar2(1000);
+alter table S_BELGIAN_PATENT_FULLTEXT add batch varchar2(1000);
+alter table S_POLAND_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_ISRAEL_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_RUSSIAN_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_AUSTRALIAN_PATENT_FULLTEXT add batch varchar2(1000);
+alter table S_EURASIAN_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_COMMUNITY_INTELLECTUALRECORD add batch varchar2(1000);
+alter table S_KOREA_PATENT_ABSTRACTS add batch varchar2(1000);
+alter table S_CHINA_PATENT_FULLTEXT_PDF add batch varchar2(1000);
+alter table S_CHINA_BOOK add batch varchar2(1000);
+alter table S_JAPAN_PATENT_ABSTRACTS add batch varchar2(1000);
+alter table S_COMPANY_CODE_LIBRARY add batch varchar2(1000);
+alter table S_CHINA_PATENT_ABSTRACTS add batch varchar2(1000);
+alter table S_PATENT_PAYMENT_DI add batch varchar2(1000);
+alter table S_CHINA_CIRCUITLAYOUT add batch varchar2(1000);
+alter table S_CHINA_CUSTOMS_RECORD add batch varchar2(1000);
+alter table S_CHINA_PATENT_LAWSTATE_CHANGE add batch varchar2(1000);
+alter table S_TAIWAN_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_CHINA_PATENT_FEEINFORMATION add batch varchar2(1000);
+alter table S_FOREIGN_PATENT_SEQUENCE add batch varchar2(1000);
+alter table S_SPANISH_PATENT_FULLTEXT add batch varchar2(1000);
+alter table S_CHINA_PATENT_GAZETTE add batch varchar2(1000);
+alter table S_GLOBAL_PATENT_CITATION add batch varchar2(1000);
+alter table S_KOREA_DESIGN_PATENT add batch varchar2(1000);
+alter table S_CHINA_PATENT_BIOLOGICALSEQ add batch varchar2(1000);
+alter table S_JAPAN_PATENT_FULLTEXTCODE add batch varchar2(1000);
+alter table S_SINGAPORE_PATENT_DESCRIPTION add batch varchar2(1000);
+alter table S_CHINA_PATENT_BIBLIOGRAPHIC add batch varchar2(1000);
+alter table S_GERMAN_DESIGN_PATENT add batch varchar2(1000);
+alter table S_CHINA_BIOLOGICAL_PROCESS add batch varchar2(1000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select * from S_STD_CN_PRS;
+
+
+select count(1) from S_STD_CN_PRS;
+
+
+
+truncate table S_STD_CN_PRS;
+
+
+delete from import_session s where s.data_res_type = '中国专利法律状态（STD_CN_PRS）（标准化）';
+commit;
+
+
+
+delete from s_import_bath s where s.res_type = '中国专利法律状态（STD_CN_PRS）（标准化）';
+commit;
+
+
+
+
+
+alter table S_STD_CN_PRS add xml_path varchar2(4000);
+
+
+
+
+
+
+
+
+
+
+select count(1) from S_STD_CN_PRS;
+
+
+
+
 select t.*, t.rowid from S_DATA_RESOURCE_TYPES_DETAIL t;
 
 

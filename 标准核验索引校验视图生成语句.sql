@@ -3,7 +3,20 @@
 with result_subq as
 (
 select chr(10) || chr(10) || chr(10) || '
-----'|| to_char(dtd.id) || ' ' ||  dtd.chinese_name ||' 多余索引列表
+----'|| to_char(dtd.id) || ' ' ||  dtd.chinese_name ||'多余索引列表
+--查看
+select * from MV_EXTRA_IDX_INFO_'||case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+      else replace(to_char(dtd.id), '.', '')
+end||';
+--删除
+drop materialized view MV_EXTRA_IDX_INFO_'||case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+      else replace(to_char(dtd.id), '.', '')
+end||';
+--新建
 create materialized view MV_EXTRA_IDX_INFO_'||case
   when length(to_char(dtd.id)) < 3
     then lpad(to_char(dtd.id), 3, '0')
@@ -23,10 +36,23 @@ and
 not exists
 (
 select 1 from '||upper(dtd.table_Name)||' d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----'|| to_char(dtd.id) || ' ' || dtd.chinese_name ||' 多余数据列表
+----'|| to_char(dtd.id) || ' ' || dtd.chinese_name ||'多余数据列表
+--查看
+select * from MV_EXTRA_DOC_INFO_'||case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+      else replace(to_char(dtd.id), '.', '')
+end||';
+--删除
+drop materialized view MV_EXTRA_DOC_INFO_'||case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+      else replace(to_char(dtd.id), '.', '')
+end||';
+--新建
 create materialized view MV_EXTRA_DOC_INFO_'||case
   when length(to_char(dtd.id)) < 3
     then lpad(to_char(dtd.id), 3, '0')
@@ -45,11 +71,24 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 ' as SQL1,
 '
 ----'|| to_char(dtd.id) || ' ' || dtd.chinese_name ||' 校验结果
+--查看
+select * from MV_CHECKS_RESULT_'||case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+      else replace(to_char(dtd.id), '.', '')
+end||';
+--删除
+drop materialized view MV_CHECKS_RESULT_'||case
+  when length(to_char(dtd.id)) < 3
+    then lpad(to_char(dtd.id), 3, '0')
+      else replace(to_char(dtd.id), '.', '')
+end||';
+--新建
 create materialized view MV_CHECKS_RESULT_'||case
   when length(to_char(dtd.id)) < 3
     then lpad(to_char(dtd.id), 3, '0')
@@ -117,7 +156,6 @@ left join
     where
     id.data_res='''||dtd.chinese_Name||'''
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -135,7 +173,6 @@ left join
   from
   '||upper(dtd.table_Name)||' s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc

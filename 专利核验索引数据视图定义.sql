@@ -2,7 +2,12 @@
 
 
 
-----3 ä¸­å›½ä¸“åˆ©æ ‡å‡†åŒ–å…¨æ–‡æ–‡æœ¬æ•°æ® å¤šä½™ç´¢å¼•åˆ—è¡¨
+----3 ÖĞ¹ú×¨Àû±ê×¼»¯È«ÎÄÎÄ±¾Êı¾İ¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_003;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_003;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_003
 refresh force on demand
 as
@@ -11,17 +16,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'ä¸­å›½ä¸“åˆ©æ ‡å‡†åŒ–å…¨æ–‡æ–‡æœ¬æ•°æ®'
+id.data_res = 'ÖĞ¹ú×¨Àû±ê×¼»¯È«ÎÄÎÄ±¾Êı¾İ'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_CHINA_PATENT_STANDARDFULLTXT d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----3 ä¸­å›½ä¸“åˆ©æ ‡å‡†åŒ–å…¨æ–‡æ–‡æœ¬æ•°æ® å¤šä½™æ•°æ®åˆ—è¡¨
+----3 ÖĞ¹ú×¨Àû±ê×¼»¯È«ÎÄÎÄ±¾Êı¾İ¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_003;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_003;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_003
 refresh force on demand
 as
@@ -36,11 +46,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----3 ä¸­å›½ä¸“åˆ©æ ‡å‡†åŒ–å…¨æ–‡æ–‡æœ¬æ•°æ® æ ¡éªŒç»“æœ
+----3 ÖĞ¹ú×¨Àû±ê×¼»¯È«ÎÄÎÄ±¾Êı¾İ Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_003;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_003;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_003
 refresh force on demand
 as
@@ -64,14 +79,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'ä¸­å›½ä¸“åˆ©æ ‡å‡†åŒ–å…¨æ–‡æ–‡æœ¬æ•°æ®'
+          s.data_res = 'ÖĞ¹ú×¨Àû±ê×¼»¯È«ÎÄÎÄ±¾Êı¾İ'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -102,9 +117,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='ä¸­å›½ä¸“åˆ©æ ‡å‡†åŒ–å…¨æ–‡æ–‡æœ¬æ•°æ®'
+    id.data_res='ÖĞ¹ú×¨Àû±ê×¼»¯È«ÎÄÎÄ±¾Êı¾İ'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -122,7 +136,6 @@ left join
   from
   S_CHINA_PATENT_STANDARDFULLTXT s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -134,7 +147,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='ä¸­å›½ä¸“åˆ©æ ‡å‡†åŒ–å…¨æ–‡æ–‡æœ¬æ•°æ®'
+      where d.data_res='ÖĞ¹ú×¨Àû±ê×¼»¯È«ÎÄÎÄ±¾Êı¾İ'
       and
       exists
       (
@@ -153,7 +166,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----6 ä¸­å›½ä¸“åˆ©è‘—å½•é¡¹ç›®ä¸æ–‡æ‘˜æ•°æ® å¤šä½™ç´¢å¼•åˆ—è¡¨
+----6 ÖĞ¹ú×¨ÀûÖøÂ¼ÏîÄ¿ÓëÎÄÕªÊı¾İ¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_006;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_006;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_006
 refresh force on demand
 as
@@ -162,17 +180,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'ä¸­å›½ä¸“åˆ©è‘—å½•é¡¹ç›®ä¸æ–‡æ‘˜æ•°æ®'
+id.data_res = 'ÖĞ¹ú×¨ÀûÖøÂ¼ÏîÄ¿ÓëÎÄÕªÊı¾İ'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_CHINA_PATENT_BIBLIOGRAPHIC d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----6 ä¸­å›½ä¸“åˆ©è‘—å½•é¡¹ç›®ä¸æ–‡æ‘˜æ•°æ® å¤šä½™æ•°æ®åˆ—è¡¨
+----6 ÖĞ¹ú×¨ÀûÖøÂ¼ÏîÄ¿ÓëÎÄÕªÊı¾İ¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_006;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_006;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_006
 refresh force on demand
 as
@@ -187,11 +210,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----6 ä¸­å›½ä¸“åˆ©è‘—å½•é¡¹ç›®ä¸æ–‡æ‘˜æ•°æ® æ ¡éªŒç»“æœ
+----6 ÖĞ¹ú×¨ÀûÖøÂ¼ÏîÄ¿ÓëÎÄÕªÊı¾İ Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_006;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_006;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_006
 refresh force on demand
 as
@@ -215,14 +243,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'ä¸­å›½ä¸“åˆ©è‘—å½•é¡¹ç›®ä¸æ–‡æ‘˜æ•°æ®'
+          s.data_res = 'ÖĞ¹ú×¨ÀûÖøÂ¼ÏîÄ¿ÓëÎÄÕªÊı¾İ'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -253,9 +281,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='ä¸­å›½ä¸“åˆ©è‘—å½•é¡¹ç›®ä¸æ–‡æ‘˜æ•°æ®'
+    id.data_res='ÖĞ¹ú×¨ÀûÖøÂ¼ÏîÄ¿ÓëÎÄÕªÊı¾İ'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -273,7 +300,6 @@ left join
   from
   S_CHINA_PATENT_BIBLIOGRAPHIC s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -285,7 +311,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='ä¸­å›½ä¸“åˆ©è‘—å½•é¡¹ç›®ä¸æ–‡æ‘˜æ•°æ®'
+      where d.data_res='ÖĞ¹ú×¨ÀûÖøÂ¼ÏîÄ¿ÓëÎÄÕªÊı¾İ'
       and
       exists
       (
@@ -304,7 +330,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----50 ç¾å›½ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----50 ÃÀ¹ú×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_050;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_050;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_050
 refresh force on demand
 as
@@ -313,17 +344,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'ç¾å›½ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'ÃÀ¹ú×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_AMERICAN_PATENT_FULLTEXT d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----50 ç¾å›½ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----50 ÃÀ¹ú×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_050;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_050;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_050
 refresh force on demand
 as
@@ -338,11 +374,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----50 ç¾å›½ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----50 ÃÀ¹ú×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_050;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_050;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_050
 refresh force on demand
 as
@@ -366,14 +407,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'ç¾å›½ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'ÃÀ¹ú×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -404,9 +445,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='ç¾å›½ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='ÃÀ¹ú×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -424,7 +464,6 @@ left join
   from
   S_AMERICAN_PATENT_FULLTEXT s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -436,7 +475,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='ç¾å›½ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='ÃÀ¹ú×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -455,7 +494,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----51 æ¬§ä¸“å±€ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----51 Å·×¨¾Ö×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_051;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_051;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_051
 refresh force on demand
 as
@@ -464,17 +508,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ¬§ä¸“å±€ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'Å·×¨¾Ö×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_EUROPEAN_PATENT_FULLTEXT d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----51 æ¬§ä¸“å±€ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----51 Å·×¨¾Ö×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_051;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_051;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_051
 refresh force on demand
 as
@@ -489,11 +538,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----51 æ¬§ä¸“å±€ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----51 Å·×¨¾Ö×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_051;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_051;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_051
 refresh force on demand
 as
@@ -517,14 +571,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ¬§ä¸“å±€ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'Å·×¨¾Ö×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -555,9 +609,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ¬§ä¸“å±€ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='Å·×¨¾Ö×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -575,7 +628,6 @@ left join
   from
   S_EUROPEAN_PATENT_FULLTEXT s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -587,7 +639,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ¬§ä¸“å±€ä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='Å·×¨¾Ö×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -606,7 +658,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----52 éŸ©å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----52 º«¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_052;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_052;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_052
 refresh force on demand
 as
@@ -615,17 +672,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'éŸ©å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'º«¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_KOREAN_PATENT_FULLTEXTCODE d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----52 éŸ©å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----52 º«¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_052;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_052;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_052
 refresh force on demand
 as
@@ -640,11 +702,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----52 éŸ©å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----52 º«¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_052;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_052;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_052
 refresh force on demand
 as
@@ -668,14 +735,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'éŸ©å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'º«¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -706,9 +773,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='éŸ©å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='º«¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -726,7 +792,6 @@ left join
   from
   S_KOREAN_PATENT_FULLTEXTCODE s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -738,7 +803,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='éŸ©å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='º«¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -757,7 +822,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----53 ç‘å£«ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----53 ÈğÊ¿×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_053;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_053;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_053
 refresh force on demand
 as
@@ -766,17 +836,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'ç‘å£«ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'ÈğÊ¿×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_SWISS_PATENT_FULLTEXTCODE d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----53 ç‘å£«ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----53 ÈğÊ¿×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_053;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_053;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_053
 refresh force on demand
 as
@@ -791,11 +866,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----53 ç‘å£«ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----53 ÈğÊ¿×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_053;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_053;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_053
 refresh force on demand
 as
@@ -819,14 +899,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'ç‘å£«ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'ÈğÊ¿×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -857,9 +937,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='ç‘å£«ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='ÈğÊ¿×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -877,7 +956,6 @@ left join
   from
   S_SWISS_PATENT_FULLTEXTCODE s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -889,7 +967,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='ç‘å£«ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='ÈğÊ¿×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -908,7 +986,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----54 è‹±å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----54 Ó¢¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_054;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_054;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_054
 refresh force on demand
 as
@@ -917,17 +1000,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'è‹±å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'Ó¢¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_BRITISH_PATENT_FULLTEXTCODE d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----54 è‹±å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----54 Ó¢¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_054;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_054;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_054
 refresh force on demand
 as
@@ -942,11 +1030,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----54 è‹±å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----54 Ó¢¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_054;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_054;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_054
 refresh force on demand
 as
@@ -970,14 +1063,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'è‹±å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'Ó¢¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -1008,9 +1101,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='è‹±å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='Ó¢¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -1028,7 +1120,6 @@ left join
   from
   S_BRITISH_PATENT_FULLTEXTCODE s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -1040,7 +1131,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='è‹±å›½ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='Ó¢¹ú×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -1059,7 +1150,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----55 æ—¥æœ¬ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----55 ÈÕ±¾×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_055;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_055;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_055
 refresh force on demand
 as
@@ -1068,17 +1164,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ—¥æœ¬ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'ÈÕ±¾×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_JAPAN_PATENT_FULLTEXTCODE d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----55 æ—¥æœ¬ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----55 ÈÕ±¾×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_055;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_055;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_055
 refresh force on demand
 as
@@ -1093,11 +1194,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----55 æ—¥æœ¬ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----55 ÈÕ±¾×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_055;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_055;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_055
 refresh force on demand
 as
@@ -1121,14 +1227,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ—¥æœ¬ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'ÈÕ±¾×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -1159,9 +1265,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ—¥æœ¬ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='ÈÕ±¾×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -1179,7 +1284,6 @@ left join
   from
   S_JAPAN_PATENT_FULLTEXTCODE s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -1191,7 +1295,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ—¥æœ¬ä¸“åˆ©å…¨æ–‡ä»£ç åŒ–æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='ÈÕ±¾×¨ÀûÈ«ÎÄ´úÂë»¯Êı¾İ£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -1210,7 +1314,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----103 æ¯”åˆ©æ—¶ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆBEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----103 ±ÈÀûÊ±×¨ÀûÈ«ÎÄÊı¾İ£¨BE£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_103;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_103;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_103
 refresh force on demand
 as
@@ -1219,17 +1328,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ¯”åˆ©æ—¶ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆBEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '±ÈÀûÊ±×¨ÀûÈ«ÎÄÊı¾İ£¨BE£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_BELGIAN_PATENT_FULLTEXT d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----103 æ¯”åˆ©æ—¶ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆBEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----103 ±ÈÀûÊ±×¨ÀûÈ«ÎÄÊı¾İ£¨BE£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_103;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_103;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_103
 refresh force on demand
 as
@@ -1244,11 +1358,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----103 æ¯”åˆ©æ—¶ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆBEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----103 ±ÈÀûÊ±×¨ÀûÈ«ÎÄÊı¾İ£¨BE£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_103;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_103;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_103
 refresh force on demand
 as
@@ -1272,14 +1391,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ¯”åˆ©æ—¶ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆBEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '±ÈÀûÊ±×¨ÀûÈ«ÎÄÊı¾İ£¨BE£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -1310,9 +1429,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ¯”åˆ©æ—¶ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆBEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='±ÈÀûÊ±×¨ÀûÈ«ÎÄÊı¾İ£¨BE£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -1330,7 +1448,6 @@ left join
   from
   S_BELGIAN_PATENT_FULLTEXT s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -1342,7 +1459,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ¯”åˆ©æ—¶ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆBEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='±ÈÀûÊ±×¨ÀûÈ«ÎÄÊı¾İ£¨BE£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -1361,7 +1478,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----104 å¥¥åœ°åˆ©ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆATï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----104 °ÂµØÀû×¨ÀûÈ«ÎÄÊı¾İ£¨AT£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_104;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_104;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_104
 refresh force on demand
 as
@@ -1370,17 +1492,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'å¥¥åœ°åˆ©ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆATï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '°ÂµØÀû×¨ÀûÈ«ÎÄÊı¾İ£¨AT£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_AUSTRIA_PATENT_FULLTEXT d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----104 å¥¥åœ°åˆ©ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆATï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----104 °ÂµØÀû×¨ÀûÈ«ÎÄÊı¾İ£¨AT£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_104;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_104;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_104
 refresh force on demand
 as
@@ -1395,11 +1522,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----104 å¥¥åœ°åˆ©ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆATï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----104 °ÂµØÀû×¨ÀûÈ«ÎÄÊı¾İ£¨AT£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_104;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_104;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_104
 refresh force on demand
 as
@@ -1423,14 +1555,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'å¥¥åœ°åˆ©ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆATï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '°ÂµØÀû×¨ÀûÈ«ÎÄÊı¾İ£¨AT£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -1461,9 +1593,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='å¥¥åœ°åˆ©ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆATï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='°ÂµØÀû×¨ÀûÈ«ÎÄÊı¾İ£¨AT£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -1481,7 +1612,6 @@ left join
   from
   S_AUSTRIA_PATENT_FULLTEXT s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -1493,7 +1623,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='å¥¥åœ°åˆ©ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆATï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='°ÂµØÀû×¨ÀûÈ«ÎÄÊı¾İ£¨AT£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -1512,7 +1642,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----105 è¥¿ç­ç‰™ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆESï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----105 Î÷°àÑÀ×¨ÀûÈ«ÎÄÊı¾İ£¨ES£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_105;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_105;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_105
 refresh force on demand
 as
@@ -1521,17 +1656,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'è¥¿ç­ç‰™ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆESï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'Î÷°àÑÀ×¨ÀûÈ«ÎÄÊı¾İ£¨ES£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_SPANISH_PATENT_FULLTEXT d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----105 è¥¿ç­ç‰™ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆESï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----105 Î÷°àÑÀ×¨ÀûÈ«ÎÄÊı¾İ£¨ES£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_105;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_105;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_105
 refresh force on demand
 as
@@ -1546,11 +1686,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----105 è¥¿ç­ç‰™ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆESï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----105 Î÷°àÑÀ×¨ÀûÈ«ÎÄÊı¾İ£¨ES£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_105;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_105;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_105
 refresh force on demand
 as
@@ -1574,14 +1719,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'è¥¿ç­ç‰™ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆESï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'Î÷°àÑÀ×¨ÀûÈ«ÎÄÊı¾İ£¨ES£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -1612,9 +1757,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='è¥¿ç­ç‰™ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆESï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='Î÷°àÑÀ×¨ÀûÈ«ÎÄÊı¾İ£¨ES£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -1632,7 +1776,6 @@ left join
   from
   S_SPANISH_PATENT_FULLTEXT s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -1644,7 +1787,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='è¥¿ç­ç‰™ä¸“åˆ©å…¨æ–‡æ•°æ®ï¼ˆESï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='Î÷°àÑÀ×¨ÀûÈ«ÎÄÊı¾İ£¨ES£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -1663,7 +1806,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----106 æ³¢å…°ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆPLï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----106 ²¨À¼×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨PL£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_106;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_106;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_106
 refresh force on demand
 as
@@ -1672,17 +1820,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ³¢å…°ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆPLï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '²¨À¼×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨PL£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_POLAND_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----106 æ³¢å…°ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆPLï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----106 ²¨À¼×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨PL£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_106;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_106;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_106
 refresh force on demand
 as
@@ -1697,11 +1850,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----106 æ³¢å…°ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆPLï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----106 ²¨À¼×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨PL£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_106;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_106;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_106
 refresh force on demand
 as
@@ -1725,14 +1883,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ³¢å…°ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆPLï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '²¨À¼×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨PL£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -1763,9 +1921,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ³¢å…°ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆPLï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='²¨À¼×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨PL£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -1783,7 +1940,6 @@ left join
   from
   S_POLAND_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -1795,7 +1951,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ³¢å…°ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆPLï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='²¨À¼×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨PL£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -1814,7 +1970,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----107 ä»¥è‰²åˆ—ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆILï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----107 ÒÔÉ«ÁĞ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨IL£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_107;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_107;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_107
 refresh force on demand
 as
@@ -1823,17 +1984,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'ä»¥è‰²åˆ—ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆILï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'ÒÔÉ«ÁĞ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨IL£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_ISRAEL_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----107 ä»¥è‰²åˆ—ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆILï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----107 ÒÔÉ«ÁĞ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨IL£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_107;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_107;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_107
 refresh force on demand
 as
@@ -1848,11 +2014,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----107 ä»¥è‰²åˆ—ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆILï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----107 ÒÔÉ«ÁĞ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨IL£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_107;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_107;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_107
 refresh force on demand
 as
@@ -1876,14 +2047,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'ä»¥è‰²åˆ—ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆILï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'ÒÔÉ«ÁĞ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨IL£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -1914,9 +2085,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='ä»¥è‰²åˆ—ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆILï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='ÒÔÉ«ÁĞ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨IL£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -1934,7 +2104,6 @@ left join
   from
   S_ISRAEL_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -1946,7 +2115,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='ä»¥è‰²åˆ—ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆILï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='ÒÔÉ«ÁĞ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨IL£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -1965,7 +2134,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----108 æ–°åŠ å¡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆSGï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----108 ĞÂ¼ÓÆÂ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨SG£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_108;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_108;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_108
 refresh force on demand
 as
@@ -1974,17 +2148,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ–°åŠ å¡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆSGï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'ĞÂ¼ÓÆÂ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨SG£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_SINGAPORE_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----108 æ–°åŠ å¡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆSGï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----108 ĞÂ¼ÓÆÂ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨SG£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_108;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_108;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_108
 refresh force on demand
 as
@@ -1999,11 +2178,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----108 æ–°åŠ å¡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆSGï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----108 ĞÂ¼ÓÆÂ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨SG£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_108;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_108;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_108
 refresh force on demand
 as
@@ -2027,14 +2211,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ–°åŠ å¡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆSGï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'ĞÂ¼ÓÆÂ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨SG£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -2065,9 +2249,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ–°åŠ å¡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆSGï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='ĞÂ¼ÓÆÂ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨SG£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -2085,7 +2268,6 @@ left join
   from
   S_SINGAPORE_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -2097,7 +2279,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ–°åŠ å¡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆSGï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='ĞÂ¼ÓÆÂ×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨SG£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -2116,7 +2298,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----213 ä¸­å›½ä¸“åˆ©æ‘˜è¦è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----213 ÖĞ¹ú×¨ÀûÕªÒªÓ¢ÎÄ·­ÒëÊı¾İ£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_213;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_213;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_213
 refresh force on demand
 as
@@ -2125,17 +2312,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'ä¸­å›½ä¸“åˆ©æ‘˜è¦è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'ÖĞ¹ú×¨ÀûÕªÒªÓ¢ÎÄ·­ÒëÊı¾İ£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_CHINA_PATENT_ABSTRACTS d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----213 ä¸­å›½ä¸“åˆ©æ‘˜è¦è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----213 ÖĞ¹ú×¨ÀûÕªÒªÓ¢ÎÄ·­ÒëÊı¾İ£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_213;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_213;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_213
 refresh force on demand
 as
@@ -2150,11 +2342,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----213 ä¸­å›½ä¸“åˆ©æ‘˜è¦è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----213 ÖĞ¹ú×¨ÀûÕªÒªÓ¢ÎÄ·­ÒëÊı¾İ£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_213;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_213;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_213
 refresh force on demand
 as
@@ -2178,14 +2375,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'ä¸­å›½ä¸“åˆ©æ‘˜è¦è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'ÖĞ¹ú×¨ÀûÕªÒªÓ¢ÎÄ·­ÒëÊı¾İ£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -2216,9 +2413,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='ä¸­å›½ä¸“åˆ©æ‘˜è¦è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='ÖĞ¹ú×¨ÀûÕªÒªÓ¢ÎÄ·­ÒëÊı¾İ£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -2236,7 +2432,6 @@ left join
   from
   S_CHINA_PATENT_ABSTRACTS s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -2248,7 +2443,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='ä¸­å›½ä¸“åˆ©æ‘˜è¦è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='ÖĞ¹ú×¨ÀûÕªÒªÓ¢ÎÄ·­ÒëÊı¾İ£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -2267,7 +2462,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----215 å›½é™…çŸ¥è¯†äº§æƒç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆWIPO)ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----215 ¹ú¼ÊÖªÊ¶²úÈ¨×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨WIPO)£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_215;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_215;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_215
 refresh force on demand
 as
@@ -2276,17 +2476,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'å›½é™…çŸ¥è¯†äº§æƒç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆWIPO)ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '¹ú¼ÊÖªÊ¶²úÈ¨×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨WIPO)£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_WIPO_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----215 å›½é™…çŸ¥è¯†äº§æƒç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆWIPO)ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----215 ¹ú¼ÊÖªÊ¶²úÈ¨×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨WIPO)£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_215;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_215;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_215
 refresh force on demand
 as
@@ -2301,11 +2506,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----215 å›½é™…çŸ¥è¯†äº§æƒç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆWIPO)ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----215 ¹ú¼ÊÖªÊ¶²úÈ¨×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨WIPO)£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_215;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_215;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_215
 refresh force on demand
 as
@@ -2329,14 +2539,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'å›½é™…çŸ¥è¯†äº§æƒç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆWIPO)ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '¹ú¼ÊÖªÊ¶²úÈ¨×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨WIPO)£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -2367,9 +2577,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='å›½é™…çŸ¥è¯†äº§æƒç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆWIPO)ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='¹ú¼ÊÖªÊ¶²úÈ¨×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨WIPO)£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -2387,7 +2596,6 @@ left join
   from
   S_WIPO_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -2399,7 +2607,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='å›½é™…çŸ¥è¯†äº§æƒç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆWIPO)ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='¹ú¼ÊÖªÊ¶²úÈ¨×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨WIPO)£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -2418,7 +2626,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----216 åŠ æ‹¿å¤§ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆCAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----216 ¼ÓÄÃ´ó×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨CA£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_216;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_216;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_216
 refresh force on demand
 as
@@ -2427,17 +2640,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'åŠ æ‹¿å¤§ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆCAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '¼ÓÄÃ´ó×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨CA£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_CANADIAN_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----216 åŠ æ‹¿å¤§ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆCAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----216 ¼ÓÄÃ´ó×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨CA£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_216;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_216;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_216
 refresh force on demand
 as
@@ -2452,11 +2670,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----216 åŠ æ‹¿å¤§ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆCAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----216 ¼ÓÄÃ´ó×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨CA£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_216;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_216;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_216
 refresh force on demand
 as
@@ -2480,14 +2703,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'åŠ æ‹¿å¤§ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆCAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '¼ÓÄÃ´ó×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨CA£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -2518,9 +2741,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='åŠ æ‹¿å¤§ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆCAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='¼ÓÄÃ´ó×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨CA£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -2538,7 +2760,6 @@ left join
   from
   S_CANADIAN_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -2550,7 +2771,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='åŠ æ‹¿å¤§ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆCAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='¼ÓÄÃ´ó×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨CA£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -2569,7 +2790,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----217 ä¿„ç½—æ–¯ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆRUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----217 ¶íÂŞË¹×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨RU£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_217;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_217;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_217
 refresh force on demand
 as
@@ -2578,17 +2804,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'ä¿„ç½—æ–¯ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆRUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '¶íÂŞË¹×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨RU£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_RUSSIAN_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----217 ä¿„ç½—æ–¯ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆRUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----217 ¶íÂŞË¹×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨RU£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_217;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_217;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_217
 refresh force on demand
 as
@@ -2603,11 +2834,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----217 ä¿„ç½—æ–¯ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆRUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----217 ¶íÂŞË¹×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨RU£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_217;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_217;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_217
 refresh force on demand
 as
@@ -2631,14 +2867,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'ä¿„ç½—æ–¯ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆRUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '¶íÂŞË¹×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨RU£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -2669,9 +2905,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='ä¿„ç½—æ–¯ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆRUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='¶íÂŞË¹×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨RU£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -2689,7 +2924,6 @@ left join
   from
   S_RUSSIAN_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -2701,7 +2935,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='ä¿„ç½—æ–¯ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆRUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='¶íÂŞË¹×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨RU£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -2720,7 +2954,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----218 æ¾³å¤§åˆ©äºšä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆAUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----218 °Ä´óÀûÑÇ×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨AU£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_218;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_218;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_218
 refresh force on demand
 as
@@ -2729,17 +2968,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ¾³å¤§åˆ©äºšä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆAUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '°Ä´óÀûÑÇ×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨AU£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_AUSTRALIAN_PATENT_FULLTEXT d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----218 æ¾³å¤§åˆ©äºšä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆAUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----218 °Ä´óÀûÑÇ×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨AU£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_218;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_218;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_218
 refresh force on demand
 as
@@ -2754,11 +2998,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----218 æ¾³å¤§åˆ©äºšä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆAUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----218 °Ä´óÀûÑÇ×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨AU£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_218;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_218;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_218
 refresh force on demand
 as
@@ -2782,14 +3031,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ¾³å¤§åˆ©äºšä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆAUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '°Ä´óÀûÑÇ×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨AU£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -2820,9 +3069,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ¾³å¤§åˆ©äºšä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆAUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='°Ä´óÀûÑÇ×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨AU£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -2840,7 +3088,6 @@ left join
   from
   S_AUSTRALIAN_PATENT_FULLTEXT s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -2852,7 +3099,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ¾³å¤§åˆ©äºšä¸“åˆ©å…¨æ–‡æ–‡æœ¬æ•°æ®ï¼ˆAUï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='°Ä´óÀûÑÇ×¨ÀûÈ«ÎÄÎÄ±¾Êı¾İ£¨AU£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -2871,7 +3118,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----219 å¾·å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆDEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----219 µÂ¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨DE£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_219;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_219;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_219
 refresh force on demand
 as
@@ -2880,17 +3132,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'å¾·å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆDEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'µÂ¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨DE£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_GERMAN_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----219 å¾·å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆDEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----219 µÂ¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨DE£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_219;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_219;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_219
 refresh force on demand
 as
@@ -2905,11 +3162,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----219 å¾·å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆDEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----219 µÂ¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨DE£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_219;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_219;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_219
 refresh force on demand
 as
@@ -2933,14 +3195,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'å¾·å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆDEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'µÂ¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨DE£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -2971,9 +3233,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='å¾·å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆDEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='µÂ¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨DE£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -2991,7 +3252,6 @@ left join
   from
   S_GERMAN_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -3003,7 +3263,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='å¾·å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆDEï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='µÂ¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨DE£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -3022,7 +3282,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----220 æ³•å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆFRï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----220 ·¨¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨FR£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_220;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_220;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_220
 refresh force on demand
 as
@@ -3031,17 +3296,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ³•å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆFRï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '·¨¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨FR£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_FRENCH_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----220 æ³•å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆFRï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----220 ·¨¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨FR£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_220;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_220;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_220
 refresh force on demand
 as
@@ -3056,11 +3326,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----220 æ³•å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆFRï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----220 ·¨¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨FR£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_220;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_220;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_220
 refresh force on demand
 as
@@ -3084,14 +3359,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ³•å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆFRï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '·¨¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨FR£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -3122,9 +3397,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ³•å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆFRï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='·¨¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨FR£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -3142,7 +3416,6 @@ left join
   from
   S_FRENCH_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -3154,7 +3427,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ³•å›½ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆFRï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='·¨¹ú×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨FR£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -3173,7 +3446,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----221 å°æ¹¾ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆTWï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----221 Ì¨Íå×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨TW£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_221;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_221;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_221
 refresh force on demand
 as
@@ -3182,17 +3460,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'å°æ¹¾ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆTWï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'Ì¨Íå×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨TW£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_TAIWAN_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----221 å°æ¹¾ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆTWï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----221 Ì¨Íå×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨TW£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_221;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_221;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_221
 refresh force on demand
 as
@@ -3207,11 +3490,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----221 å°æ¹¾ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆTWï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----221 Ì¨Íå×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨TW£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_221;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_221;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_221
 refresh force on demand
 as
@@ -3235,14 +3523,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'å°æ¹¾ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆTWï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'Ì¨Íå×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨TW£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -3273,9 +3561,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='å°æ¹¾ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆTWï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='Ì¨Íå×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨TW£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -3293,7 +3580,6 @@ left join
   from
   S_TAIWAN_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -3305,7 +3591,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='å°æ¹¾ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆTWï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='Ì¨Íå×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨TW£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -3324,7 +3610,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----222 é¦™æ¸¯ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆHKï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----222 Ïã¸Û×¨ÀûÖøÂ¼ÏîÊı¾İ£¨HK£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_222;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_222;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_222
 refresh force on demand
 as
@@ -3333,17 +3624,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'é¦™æ¸¯ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆHKï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'Ïã¸Û×¨ÀûÖøÂ¼ÏîÊı¾İ£¨HK£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_HONGKONG_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----222 é¦™æ¸¯ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆHKï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----222 Ïã¸Û×¨ÀûÖøÂ¼ÏîÊı¾İ£¨HK£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_222;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_222;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_222
 refresh force on demand
 as
@@ -3358,11 +3654,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----222 é¦™æ¸¯ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆHKï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----222 Ïã¸Û×¨ÀûÖøÂ¼ÏîÊı¾İ£¨HK£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_222;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_222;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_222
 refresh force on demand
 as
@@ -3386,14 +3687,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'é¦™æ¸¯ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆHKï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'Ïã¸Û×¨ÀûÖøÂ¼ÏîÊı¾İ£¨HK£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -3424,9 +3725,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='é¦™æ¸¯ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆHKï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='Ïã¸Û×¨ÀûÖøÂ¼ÏîÊı¾İ£¨HK£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -3444,7 +3744,6 @@ left join
   from
   S_HONGKONG_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -3456,7 +3755,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='é¦™æ¸¯ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆHKï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='Ïã¸Û×¨ÀûÖøÂ¼ÏîÊı¾İ£¨HK£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -3475,7 +3774,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----223 æ¾³é—¨ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆMOï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----223 °ÄÃÅ×¨ÀûÖøÂ¼ÏîÊı¾İ£¨MO£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_223;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_223;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_223
 refresh force on demand
 as
@@ -3484,17 +3788,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ¾³é—¨ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆMOï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = '°ÄÃÅ×¨ÀûÖøÂ¼ÏîÊı¾İ£¨MO£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_MACAO_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----223 æ¾³é—¨ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆMOï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----223 °ÄÃÅ×¨ÀûÖøÂ¼ÏîÊı¾İ£¨MO£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_223;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_223;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_223
 refresh force on demand
 as
@@ -3509,11 +3818,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----223 æ¾³é—¨ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆMOï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----223 °ÄÃÅ×¨ÀûÖøÂ¼ÏîÊı¾İ£¨MO£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_223;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_223;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_223
 refresh force on demand
 as
@@ -3537,14 +3851,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ¾³é—¨ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆMOï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = '°ÄÃÅ×¨ÀûÖøÂ¼ÏîÊı¾İ£¨MO£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -3575,9 +3889,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ¾³é—¨ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆMOï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='°ÄÃÅ×¨ÀûÖøÂ¼ÏîÊı¾İ£¨MO£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -3595,7 +3908,6 @@ left join
   from
   S_MACAO_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -3607,7 +3919,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ¾³é—¨ä¸“åˆ©è‘—å½•é¡¹æ•°æ®ï¼ˆMOï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='°ÄÃÅ×¨ÀûÖøÂ¼ÏîÊı¾İ£¨MO£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -3626,7 +3938,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----224 æ¬§äºšç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆEAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----224 Å·ÑÇ×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨EA£©£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_224;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_224;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_224
 refresh force on demand
 as
@@ -3635,17 +3952,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ¬§äºšç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆEAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'Å·ÑÇ×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨EA£©£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_EURASIAN_PATENT_DESCRIPTION d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----224 æ¬§äºšç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆEAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----224 Å·ÑÇ×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨EA£©£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_224;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_224;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_224
 refresh force on demand
 as
@@ -3660,11 +3982,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----224 æ¬§äºšç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆEAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----224 Å·ÑÇ×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨EA£©£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_224;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_224;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_224
 refresh force on demand
 as
@@ -3688,14 +4015,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ¬§äºšç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆEAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'Å·ÑÇ×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨EA£©£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -3726,9 +4053,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ¬§äºšç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆEAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='Å·ÑÇ×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨EA£©£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -3746,7 +4072,6 @@ left join
   from
   S_EURASIAN_PATENT_DESCRIPTION s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -3758,7 +4083,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ¬§äºšç»„ç»‡ä¸“åˆ©è‘—å½•é¡¹åŠå…¨æ–‡æ•°æ®ï¼ˆEAï¼‰ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='Å·ÑÇ×éÖ¯×¨ÀûÖøÂ¼Ïî¼°È«ÎÄÊı¾İ£¨EA£©£¨±ê×¼»¯£©'
       and
       exists
       (
@@ -3777,7 +4102,12 @@ stat.pub_date = matched_Rec.pub_date
 
 
 
-----229 æ—¥æœ¬ä¸“åˆ©æ–‡æ‘˜è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆPAJ)ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™ç´¢å¼•åˆ—è¡¨
+----229 ÈÕ±¾×¨ÀûÎÄÕªÓ¢ÎÄ·­ÒëÊı¾İ£¨PAJ)£¨±ê×¼»¯£©¶àÓàË÷ÒıÁĞ±í
+--²é¿´
+select * from MV_EXTRA_IDX_INFO_229;
+--É¾³ı
+drop materialized view MV_EXTRA_IDX_INFO_229;
+--ĞÂ½¨
 create materialized view MV_EXTRA_IDX_INFO_229
 refresh force on demand
 as
@@ -3786,17 +4116,22 @@ id.pub_date, id.pub_kind, id.doc_file, id.index_file_path, id.doc_file_name
 from
 s_index_file_detail id
 where
-id.data_res = 'æ—¥æœ¬ä¸“åˆ©æ–‡æ‘˜è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆPAJ)ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+id.data_res = 'ÈÕ±¾×¨ÀûÎÄÕªÓ¢ÎÄ·­ÒëÊı¾İ£¨PAJ)£¨±ê×¼»¯£©'
 and
 56 = length(id.doc_file_name)
 and
 not exists
 (
 select 1 from S_JAPAN_PATENT_ABSTRACTS d
-where d.id.doc_file_name
+where d.doc_file_name = id.doc_file_name
 );
 
-----229 æ—¥æœ¬ä¸“åˆ©æ–‡æ‘˜è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆPAJ)ï¼ˆæ ‡å‡†åŒ–ï¼‰ å¤šä½™æ•°æ®åˆ—è¡¨
+----229 ÈÕ±¾×¨ÀûÎÄÕªÓ¢ÎÄ·­ÒëÊı¾İ£¨PAJ)£¨±ê×¼»¯£©¶àÓàÊı¾İÁĞ±í
+--²é¿´
+select * from MV_EXTRA_DOC_INFO_229;
+--É¾³ı
+drop materialized view MV_EXTRA_DOC_INFO_229;
+--ĞÂ½¨
 create materialized view MV_EXTRA_DOC_INFO_229
 refresh force on demand
 as
@@ -3811,11 +4146,16 @@ select 1
 from
 s_index_file_detail id
 where
-sta.id.doc_file_name
+sta.doc_file_name = id.doc_file_name
 );
 
 
-----229 æ—¥æœ¬ä¸“åˆ©æ–‡æ‘˜è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆPAJ)ï¼ˆæ ‡å‡†åŒ–ï¼‰ æ ¡éªŒç»“æœ
+----229 ÈÕ±¾×¨ÀûÎÄÕªÓ¢ÎÄ·­ÒëÊı¾İ£¨PAJ)£¨±ê×¼»¯£© Ğ£Ñé½á¹û
+--²é¿´
+select * from MV_CHECKS_RESULT_229;
+--É¾³ı
+drop materialized view MV_CHECKS_RESULT_229;
+--ĞÂ½¨
 create materialized view MV_CHECKS_RESULT_229
 refresh force on demand
 as
@@ -3839,14 +4179,14 @@ from
   nvl(dt.pat_cnt_Doc, 0) as doc_pat_cnt
   from
   (
-          --ç´¢å¼•å…¥åº“ç¬¦åˆè¦æ±‚
+          --Ë÷ÒıÈë¿â·ûºÏÒªÇó
           select
           s.date_publication as pub_date,
           sum(s.doclist_count) as pat_cnt_Index
           from
           s_index_file_info s
           where
-          s.data_res = 'æ—¥æœ¬ä¸“åˆ©æ–‡æ‘˜è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆPAJ)ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+          s.data_res = 'ÈÕ±¾×¨ÀûÎÄÕªÓ¢ÎÄ·­ÒëÊı¾İ£¨PAJ)£¨±ê×¼»¯£©'
           and
           s.fully_imported = 'Y'
           group by s.date_publication
@@ -3877,9 +4217,8 @@ left join
     from
     s_index_file_detail id
     where
-    id.data_res='æ—¥æœ¬ä¸“åˆ©æ–‡æ‘˜è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆPAJ)ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+    id.data_res='ÈÕ±¾×¨ÀûÎÄÕªÓ¢ÎÄ·­ÒëÊı¾İ£¨PAJ)£¨±ê×¼»¯£©'
     group by id.pub_date, id.doc_file_name
-    having count(1) = 1
   )
   group by pub_date
 ) ds_index
@@ -3897,7 +4236,6 @@ left join
   from
   S_JAPAN_PATENT_ABSTRACTS s
   group by s.ori_pub_date, s.doc_file_name
-  having count(1) = 1
   )
   group by pub_date
 ) ds_Doc
@@ -3909,7 +4247,7 @@ left join
       d.pub_date, count(1) as matched_count, count(distinct d.doc_file_name) as matched_ds_count
       from
       s_index_file_detail d
-      where d.data_res='æ—¥æœ¬ä¸“åˆ©æ–‡æ‘˜è‹±æ–‡ç¿»è¯‘æ•°æ®ï¼ˆPAJ)ï¼ˆæ ‡å‡†åŒ–ï¼‰'
+      where d.data_res='ÈÕ±¾×¨ÀûÎÄÕªÓ¢ÎÄ·­ÒëÊı¾İ£¨PAJ)£¨±ê×¼»¯£©'
       and
       exists
       (
